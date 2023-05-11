@@ -16,6 +16,7 @@ export default class Niveau1 extends Phaser.Scene {
         const level1 = this.add.tilemap("map");
         const tileset = level1.addTilesetImage("placholder_sol", "tileset");
         const platform = level1.createLayer("platform", tileset);
+
     }
     update() { }
 }
