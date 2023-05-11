@@ -1,4 +1,4 @@
-import Niveau1 from "/niveau_1.js"
+import Niveau1 from "./niveau_1.js"
 
 const WIDTH = 1280;
 const HEIGHT = 768;
@@ -27,7 +27,7 @@ const config = {
       debug: true
     },
   },
-  scene: initScenes()
+  scene: [Niveau1]
 };
 
 new Phaser.Game(config);
