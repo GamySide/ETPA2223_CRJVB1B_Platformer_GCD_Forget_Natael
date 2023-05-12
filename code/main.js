@@ -1,7 +1,7 @@
 import Niveau1 from "./niveau_1.js"
 
-const WIDTH = 1280;
-const HEIGHT = 768;
+const WIDTH = 4640;
+const HEIGHT = 2610;
 const ZOOM_FACTOR = 3;
 
 const SHARED_CONFIG = {
@@ -24,6 +24,7 @@ const config = {
   physics: {
     default: 'arcade',
     arcade: {
+      gravity: {y:512},
       debug: true
     },
   },
