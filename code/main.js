@@ -24,6 +24,7 @@ const config = {
   physics: {
     default: 'arcade',
     arcade: {
+      tileBias: 256,
       gravity: {y:1024},
       debug: true
     },
