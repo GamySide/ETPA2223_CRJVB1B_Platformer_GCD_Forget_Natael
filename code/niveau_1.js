@@ -18,16 +18,24 @@ export default class Niveau1 extends Phaser.Scene {
     create() {
         const level1 = this.add.tilemap("map");
         const tileset = level1.addTilesetImage("placholder_sol", "tileset");
-        this.fond1 = this.add.image(8669, 2560,'fond1');
-        this.fond1.setScale(14);
+        this.fond1 = this.add.image(0, 2320 ,'fond1');
+        this.fond1.setScale(15);
+        this.fond2 = this.add.image(19200, 2320,'fond2');
+        this.fond2.setScale(15);
+        this.fond3 = this.add.image(38400, 2320 ,'fond1');
+        this.fond3.setScale(15);
+        this.fond4 = this.add.image(47600, 2320,'fond2');
+        this.fond4.setScale(15)
         const platform = level1.createLayer("platform", tileset);
         platform.setCollisionByProperty({estSolide:true});
         
+        
 
-        this.player = this.physics.add.sprite(200*256, 14*256, 'reparion');
+        this.player = this.physics.add.sprite(2*256, 14*256, 'reparion');
         this.player.setSize(256,512);
         this.player.setOffset(0,0);
         this.physics.add.collider(this.player, platform)
+        this.player.setCollideWorldBounds(true);
 
         this.clavier = this.input.keyboard.addKeys('A,Z,E,R,Q,S,D,ENTER,ESC,SPACE');
         this.cursors = this.input.keyboard.createCursorKeys();
@@ -56,24 +64,24 @@ export default class Niveau1 extends Phaser.Scene {
 
     update(){
         if (this.clavier.Q.isDown && this.player.body.onFloor()) { 
-            this.player.setVelocityX(-512);
+            this.player.setVelocityX(-768);
             move = true; 
         }
         else if (this.clavier.D.isDown && this.player.body.onFloor()) { 
-            this.player.setVelocityX(512);   
+            this.player.setVelocityX(768);   
             move = true         
         }
 
         if (this.clavier.SPACE.isDown && this.clavier.Q.isDown && this.player.body.onFloor()) {
             this.player.setVelocityX(-512);
-            this.player.setVelocityY(-512);
+            this.player.setVelocityY(-1024);
         }
         else if (this.clavier.SPACE.isDown && this.clavier.D.isDown && this.player.body.onFloor()) {
             this.player.setVelocityX(512);
-            this.player.setVelocityY(-512);
+            this.player.setVelocityY(-1024);
         }
         else if(this.clavier.SPACE.isDown && this.player.body.onFloor()){
-            this.player.setVelocityY(-512);
+            this.player.setVelocityY(-1024);
         }
         else if(this.player.body.onFloor() && move == false){
             this.player.setVelocityX(0);
