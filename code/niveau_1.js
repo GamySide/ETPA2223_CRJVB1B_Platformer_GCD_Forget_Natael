@@ -1,5 +1,8 @@
-var move = false;
+
 import { Player } from "./Reparion.js"
+import { Dummy } from "./dummy.js"
+import { BugliansNRJ } from "./bugliansNRJ.js"
+
 export default class Niveau1 extends Phaser.Scene {
     constructor() {
         super('Niveau1');
@@ -12,6 +15,8 @@ export default class Niveau1 extends Phaser.Scene {
         this.load.image("fond2", "../asset_lvl1/fond_niveau_1(2).png");
         this.load.tilemapTiledJSON("map", "../asset_lvl1/map_lvl1.json");
         this.load.spritesheet('reparion', '../asset_lvl1/reparion.png',{ frameWidth: 256, frameHeight: 512 });
+        this.load.spritesheet('dummy', '../asset_lvl1/dummy.png',{ frameWidth: 256, frameHeight: 512 });
+        this.load.spritesheet('bugliansNRJ', '../asset_lvl1/soulsCollect.png',{ frameWidth: 256, frameHeight: 256});
     }
 
 
@@ -33,28 +38,18 @@ export default class Niveau1 extends Phaser.Scene {
 
         
         this.player = new Player(this, 4*256, 14*256,"reparion");
+        this.littleOne = new BugliansNRJ(this,20*256,13*256,"bugliansNRJ");
+        this.littleOne.setOffset(0, 0)
+        this.littleOne.setSize(20, 20)
+        this.littleOne.setScale(0.5)
         this.physics.add.collider(this.player, platform)
+        this.physics.add.overlap(this.player, this.littleOne, () => {
+            this.player.emit('absorbtion', { information: 'énergie absorbé' });
+            this.littleOne.emit('contact', { information: 'Contact détecté' });
 
-        this.clavier = this.input.keyboard.addKeys('Q,D,SPACE,SHIFT,A,Z,E,R,X,ALT,CTRL,F');
-        this.cursors = this.input.keyboard.createCursorKeys();
-        this.pad = {
-            leftStick: { x: 0, y: 0 },
-            rightStick: { x: 0, y: 0 },
-            A: false,
-            B: false,
-            X: false,
-            Y: false,
-            L1: 0,
-            L2: 0,
-            R1: 0,
-            R2: 0,
-            right: false,
-            left: false,
-            up: false,
-            down: false,
-            start: false,
-            select: false,
-        }
+            this.littleOne.destroy();
+        });
+
         this.physics.world.setBounds(0*256, 0*256, 208*256, 20*256);
         this.cameras.main.startFollow(this.player);
         this.cameras.main.setBounds(0*256, 0*256, 208*256, 20*256);
@@ -63,6 +58,5 @@ export default class Niveau1 extends Phaser.Scene {
 
 
     update(){
-        this.player.update();
     }
 }

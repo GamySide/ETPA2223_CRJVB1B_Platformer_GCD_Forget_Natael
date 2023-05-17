@@ -3,8 +3,8 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         super(scene, x, y, sprite);
         scene.add.existing(this);
         scene.physics.add.existing(this);
-        this.init();
         this.initEvents();
+        this.init();
     }
     init() {
         //Variable 
@@ -26,11 +26,11 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         this.pointeau = false;
         this.cameraMode = false;
         this.grab = false;
-
+        this.contactOccured = false;
 
         //Controle
         this.clavier = this.scene.input.keyboard.addKeys('Q,D,SPACE,SHIFT,A,Z,E,R,X,ALT,CTRL,F');
-        
+
         this.cursors = this.scene.input.keyboard.createCursorKeys();
         this.pad = {
             leftStick: { x: 0, y: 0 },
@@ -50,69 +50,75 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
             start: false,
             select: false,
         }
-       
+
         console.log("test");
 
         //Parametre
         this.setOrigin(0.5, 0.5)
         this.setCollideWorldBounds(true);
     }
-    update(){
-        
-        
-        if (this.clavier.Q.isDown && this.player.body.onFloor()) { 
-            this.player.setVelocityX(-1024);
-            this.move = true; 
-        }
-        else if (this.clavier.D.isDown && this.player.body.onFloor()) { 
-            this.player.setVelocityX(1024);   
-            this.move = true         
+
+    update() {
+        if (this.clavier.Q.isDown && this.body.onFloor()) {
+            this.setVelocityX(-1024);
+            this.move = true;
+        } else if (this.clavier.D.isDown && this.body.onFloor()) {
+            this.setVelocityX(1024);
+            this.move = true;
         }
 
-        if (this.clavier.SPACE.isDown && this.clavier.Q.isDown && this.player.body.onFloor()) {
-            this.player.setVelocityX(-1024);
-            this.player.setAccelerationY(-4096);
+        if (this.clavier.SPACE.isDown && this.clavier.Q.isDown && this.body.onFloor()) {
+            this.setVelocityX(-1024);
+            this.setAccelerationY(-4096);
             setTimeout(() => {
-                this.player.body.gravity.y = -768;
-                this.player.setAccelerationY(0);
+                this.body.gravity.y = -768;
+                this.setAccelerationY(0);
                 setTimeout(() => {
-                    this.player.body.gravity.y = 512;
+                    this.body.gravity.y = 512;
                 }, 256);
             }, 256);
-            this.player.body.gravity.y = 0;
-        }
-        else if (this.clavier.SPACE.isDown && this.clavier.D.isDown && this.player.body.onFloor()) {
-            this.player.setVelocityX(1024);
-            this.player.setAccelerationY(-4096);
+            this.body.setGravityY(0);
+        } else if (this.clavier.SPACE.isDown && this.clavier.D.isDown && this.body.onFloor()) {
+            this.setVelocityX(1024);
+            this.setAccelerationY(-4096);
             setTimeout(() => {
-                this.player.body.gravity.y = -768;
-                this.player.setAccelerationY(0);
+                this.body.gravity.y = -768;
+                this.setAccelerationY(0);
                 setTimeout(() => {
-                    this.player.body.gravity.y = 512;
+                    this.body.gravity.y = 512;
                 }, 256);
             }, 256);
-            this.player.body.gravity.y = 0;
-        }
-        else if(this.clavier.SPACE.isDown && this.player.body.onFloor()){
-            this.player.setAccelerationY(-4096);
+            this.body.setGravityY(0);
+        } else if (this.clavier.SPACE.isDown && this.body.onFloor()) {
+            this.setAccelerationY(-4096);
             setTimeout(() => {
-                this.player.body.gravity.y = -768;
-                this.player.setAccelerationY(0);
+                this.body.gravity.y = -768;
+                this.setAccelerationY(0);
                 setTimeout(() => {
-                    this.player.body.gravity.y = 512;
+                    this.body.gravity.y = 512;
                 }, 256);
             }, 256);
-            this.player.body.gravity.y = 0;   
+            this.body.setGravityY(0);
         }
-        else if(this.player.body.onFloor() && this.move == false){
-            this.player.setVelocityX(0);
+        else if (this.body.onFloor() && !this.move) {
+            this.setVelocityX(0);
         }
+
+        this.on('absorbtion', (data) => {
+            if (this.contactOccured == false) {
+            console.log(data.information);
+            this.collecter = true;
+            this.nrj += 10;
+            console.log(this.nrj);
+            this.contactOccured = true;
+            }
+        });
+        this.contactOccured = false;
+
         this.move = false;
-        console.log(this.player.x);
-        console.log(this.player.y);
-        console.log(this.player.body.velocity.y);
     }
     initEvents() {
         this.scene.events.on(Phaser.Scenes.Events.UPDATE, this.update, this);
     }
+
 }
