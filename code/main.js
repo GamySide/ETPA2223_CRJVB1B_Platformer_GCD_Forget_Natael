@@ -1,5 +1,4 @@
 import Niveau1 from "./niveau_1.js"
-
 const WIDTH = 4640;
 const HEIGHT = 2610;
 const ZOOM_FACTOR = 3;

@@ -9,6 +9,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     init() {
         //Variable 
         this.alive = true;
+        this.nrj = 0;
         this.hp = 5;
         this.hpMax = 5;
         this.hplvl = 1;
@@ -17,6 +18,14 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         this.dodgelvl = 1;
         this.endurancelvl = 1;
         this.reslvl = 1;
+        this.dodge = false;
+        this.hurt = false;
+        this.attaque = false;
+        this.screwdriver = false;
+        this.pointeau = false;
+        this.cameraMode = false;
+        this.grab = false;
+
 
         //Controle
         this.cursors = this.scene.input.keyboard.createCursorKeys(); //Déplacement huit direction

@@ -37,7 +37,7 @@ export default class Niveau1 extends Phaser.Scene {
         this.physics.add.collider(this.player, platform)
         this.player.setCollideWorldBounds(true);
 
-        this.clavier = this.input.keyboard.addKeys('A,Z,E,R,Q,S,D,ENTER,ESC,SPACE');
+        this.clavier = this.input.keyboard.addKeys('Q,D,SPACE,SHIFT,A,Z,E,R,X,ALT,CTRL,F');
         this.cursors = this.input.keyboard.createCursorKeys();
         this.pad = {
             leftStick: { x: 0, y: 0 },
@@ -54,6 +54,8 @@ export default class Niveau1 extends Phaser.Scene {
             left: false,
             up: false,
             down: false,
+            start: false,
+            select: false,
         }
         this.physics.world.setBounds(0*256, 0*256, 208*256, 20*256);
         this.cameras.main.startFollow(this.player);
