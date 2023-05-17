@@ -62,11 +62,11 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         
         if (this.clavier.Q.isDown && this.player.body.onFloor()) { 
             this.player.setVelocityX(-1024);
-            move = true; 
+            this.move = true; 
         }
         else if (this.clavier.D.isDown && this.player.body.onFloor()) { 
             this.player.setVelocityX(1024);   
-            move = true         
+            this.move = true         
         }
 
         if (this.clavier.SPACE.isDown && this.clavier.Q.isDown && this.player.body.onFloor()) {
@@ -105,7 +105,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
             this.player.body.gravity.y = 0;
             
         }
-        else if(this.player.body.onFloor() && move == false){
+        else if(this.player.body.onFloor() && this.move == false){
             this.player.setVelocityX(0);
         }
         move = false;
