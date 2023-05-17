@@ -1,5 +1,5 @@
 var move = false;
-
+import { Player } from "./Reparion.js"
 export default class Niveau1 extends Phaser.Scene {
     constructor() {
         super('Niveau1');
@@ -31,11 +31,9 @@ export default class Niveau1 extends Phaser.Scene {
         
         
 
-        this.player = this.physics.add.sprite(2*256, 14*256, 'reparion');
-        this.player.setSize(256,512);
-        this.player.setOffset(0,0);
+        
+        this.player = new Player(this, 4*256, 14*256,"reparion");
         this.physics.add.collider(this.player, platform)
-        this.player.setCollideWorldBounds(true);
 
         this.clavier = this.input.keyboard.addKeys('Q,D,SPACE,SHIFT,A,Z,E,R,X,ALT,CTRL,F');
         this.cursors = this.input.keyboard.createCursorKeys();
@@ -65,57 +63,6 @@ export default class Niveau1 extends Phaser.Scene {
 
 
     update(){
-        if (this.clavier.Q.isDown && this.player.body.onFloor()) { 
-            this.player.setVelocityX(-1024);
-            move = true; 
-        }
-        else if (this.clavier.D.isDown && this.player.body.onFloor()) { 
-            this.player.setVelocityX(1024);   
-            move = true         
-        }
-
-        if (this.clavier.SPACE.isDown && this.clavier.Q.isDown && this.player.body.onFloor()) {
-            this.player.setVelocityX(-1024);
-            this.player.setAccelerationY(-4096);
-            setTimeout(() => {
-                this.player.body.gravity.y = -768;
-                this.player.setAccelerationY(0);
-                setTimeout(() => {
-                    this.player.body.gravity.y = 512;
-                }, 256);
-            }, 256);
-            this.player.body.gravity.y = 0;
-        }
-        else if (this.clavier.SPACE.isDown && this.clavier.D.isDown && this.player.body.onFloor()) {
-            this.player.setVelocityX(1024);
-            this.player.setAccelerationY(-4096);
-            setTimeout(() => {
-                this.player.body.gravity.y = -768;
-                this.player.setAccelerationY(0);
-                setTimeout(() => {
-                    this.player.body.gravity.y = 512;
-                }, 256);
-            }, 256);
-            this.player.body.gravity.y = 0;
-        }
-        else if(this.clavier.SPACE.isDown && this.player.body.onFloor()){
-            this.player.setAccelerationY(-4096);
-            setTimeout(() => {
-                this.player.body.gravity.y = -768;
-                this.player.setAccelerationY(0);
-                setTimeout(() => {
-                    this.player.body.gravity.y = 512;
-                }, 256);
-            }, 256);
-            this.player.body.gravity.y = 0;
-            
-        }
-        else if(this.player.body.onFloor() && move == false){
-            this.player.setVelocityX(0);
-        }
-        move = false;
-        console.log(this.player.x);
-        console.log(this.player.y);
-        console.log(this.player.body.velocity.y);
-    } 
+        this.player.update();
+    }
 }
