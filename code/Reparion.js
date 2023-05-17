@@ -1,3 +1,5 @@
+const dodgeCooldown = 1000;
+
 export class Player extends Phaser.Physics.Arcade.Sprite {
     constructor(scene, x, y, sprite) {
         super(scene, x, y, sprite);
@@ -6,8 +8,9 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         this.initEvents();
         this.init();
     }
+
     init() {
-        //Variable 
+        // Variables
         this.alive = true;
         this.nrj = 0;
         this.hp = 5;
@@ -15,9 +18,9 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         this.hplvl = 1;
         this.atklvl = 1;
         this.deflvl = 1;
-        this.dodgelvl = 1;
         this.endurancelvl = 1;
         this.reslvl = 1;
+        this.dodgelvl = 1;
         this.move = false;
         this.dodge = false;
         this.hurt = false;
@@ -27,10 +30,13 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         this.cameraMode = false;
         this.grab = false;
         this.contactOccured = false;
+        this.dodgeExecuted = false;
+        this.lastDodgeTime = 0;
+        this.isDodging = false; // Nouvelle variable pour l'état de l'esquive
+        this.isHurt = false; // Nouvelle variable pour l'état de blessure
 
-        //Controle
+        // Contrôles
         this.clavier = this.scene.input.keyboard.addKeys('Q,D,SPACE,SHIFT,A,Z,E,R,X,ALT,CTRL,F');
-
         this.cursors = this.scene.input.keyboard.createCursorKeys();
         this.pad = {
             leftStick: { x: 0, y: 0 },
@@ -49,25 +55,25 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
             down: false,
             start: false,
             select: false,
-        }
+        };
 
         console.log("test");
 
-        //Parametre
-        this.setOrigin(0.5, 0.5)
+        // Paramètres
+        this.setOrigin(0.5, 0.5);
         this.setCollideWorldBounds(true);
     }
 
     update() {
-        if (this.clavier.Q.isDown && this.body.onFloor()) {
+        if (this.clavier.Q.isDown && this.body.onFloor() && !this.isDodging) {
             this.setVelocityX(-1024);
             this.move = true;
-        } else if (this.clavier.D.isDown && this.body.onFloor()) {
+        } else if (this.clavier.D.isDown && this.body.onFloor() && !this.isDodging) {
             this.setVelocityX(1024);
             this.move = true;
         }
 
-        if (this.clavier.SPACE.isDown && this.clavier.Q.isDown && this.body.onFloor()) {
+        if (this.clavier.SPACE.isDown && this.clavier.Q.isDown && this.body.onFloor() && !this.isDodging) {
             this.setVelocityX(-1024);
             this.setAccelerationY(-4096);
             setTimeout(() => {
@@ -78,7 +84,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
                 }, 256);
             }, 256);
             this.body.setGravityY(0);
-        } else if (this.clavier.SPACE.isDown && this.clavier.D.isDown && this.body.onFloor()) {
+        } else if (this.clavier.SPACE.isDown && this.clavier.D.isDown && this.body.onFloor() && !this.isDodging) {
             this.setVelocityX(1024);
             this.setAccelerationY(-4096);
             setTimeout(() => {
@@ -89,7 +95,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
                 }, 256);
             }, 256);
             this.body.setGravityY(0);
-        } else if (this.clavier.SPACE.isDown && this.body.onFloor()) {
+        } else if (this.clavier.SPACE.isDown && this.body.onFloor() && !this.isDodging) {
             this.setAccelerationY(-4096);
             setTimeout(() => {
                 this.body.gravity.y = -768;
@@ -99,26 +105,67 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
                 }, 256);
             }, 256);
             this.body.setGravityY(0);
-        }
-        else if (this.body.onFloor() && !this.move) {
+        } else if (this.body.onFloor() && !this.move && !this.isDodging) {
             this.setVelocityX(0);
         }
 
+        const currentTime = Date.now();
+        if (this.clavier.SHIFT.isDown && this.clavier.D.isDown && !this.isDodging && currentTime - this.lastDodgeTime >= dodgeCooldown) {
+            this.setVelocityX(5000);
+            this.body.gravity.y = -1024;
+            this.isDodging = true;
+            this.lastDodgeTime = currentTime;
+            setTimeout(() => {
+                this.setVelocityX(0);
+                this.isDodging = false;
+                this.body.gravity.y = 0;
+            }, this.dodgelvl * 10 + 300);
+        }
+
+        if (this.clavier.SHIFT.isDown && this.clavier.Q.isDown && !this.isDodging && currentTime - this.lastDodgeTime >= dodgeCooldown) {
+            this.setVelocityX(-5000);
+            this.body.gravity.y = -1024;
+            this.isDodging = true;
+            this.lastDodgeTime = currentTime;
+            setTimeout(() => {
+                this.setVelocityX(0);
+                this.isDodging = false;
+                this.body.gravity.y = 0;
+            }, this.dodgelvl * 10 + 300);
+        }
+
         this.on('absorbtion', (data) => {
-            if (this.contactOccured == false) {
-            console.log(data.information);
-            this.collecter = true;
-            this.nrj += 10;
-            console.log(this.nrj);
-            this.contactOccured = true;
+            if (!this.contactOccured) {
+                console.log(data.information);
+                this.collecter = true;
+                this.nrj += 10;
+                console.log(this.nrj);
+                this.contactOccured = true;
             }
         });
-        this.contactOccured = false;
 
+        this.on('ouch', (data) => {
+            if (!this.contactOccured && !this.hurt && !this.isDodging && !this.isHurt) {
+                console.log(data.information);
+                this.hp -= 1;
+                console.log(this.hp);
+                this.contactOccured = true;
+                this.hurt = true;
+                this.isHurt = true;
+                setTimeout(() => {
+                    this.hurt = false;
+                    setTimeout(() => {
+                        this.isHurt = false;
+                    }, 1000);
+                }, 1000);
+            }
+        });
+
+        this.contactOccured = false;
         this.move = false;
     }
+
     initEvents() {
         this.scene.events.on(Phaser.Scenes.Events.UPDATE, this.update, this);
     }
-
 }
