@@ -102,13 +102,12 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
                     this.player.body.gravity.y = 512;
                 }, 256);
             }, 256);
-            this.player.body.gravity.y = 0;
-            
+            this.player.body.gravity.y = 0;   
         }
         else if(this.player.body.onFloor() && this.move == false){
             this.player.setVelocityX(0);
         }
-        move = false;
+        this.move = false;
         console.log(this.player.x);
         console.log(this.player.y);
         console.log(this.player.body.velocity.y);
