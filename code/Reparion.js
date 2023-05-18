@@ -32,8 +32,8 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         this.contactOccured = false;
         this.dodgeExecuted = false;
         this.lastDodgeTime = 0;
-        this.isDodging = false; // Nouvelle variable pour l'état de l'esquive
-        this.isHurt = false; // Nouvelle variable pour l'état de blessure
+        this.isDodging = false;
+        this.isHurt = false; 
 
         // Contrôles
         this.clavier = this.scene.input.keyboard.addKeys('Q,D,SPACE,SHIFT,A,Z,E,R,X,ALT,CTRL,F');
