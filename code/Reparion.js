@@ -112,11 +112,13 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         const currentTime = Date.now();
         if (this.clavier.SHIFT.isDown && this.clavier.D.isDown && !this.isDodging && currentTime - this.lastDodgeTime >= dodgeCooldown) {
             this.setVelocityX(5000);
+            this.setVelocityY(0);
             this.body.gravity.y = -1024;
             this.isDodging = true;
             this.lastDodgeTime = currentTime;
             setTimeout(() => {
                 this.setVelocityX(0);
+                this.setVelocityY(0);
                 this.isDodging = false;
                 this.body.gravity.y = 0;
             }, this.dodgelvl * 10 + 300);
@@ -124,11 +126,13 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
 
         if (this.clavier.SHIFT.isDown && this.clavier.Q.isDown && !this.isDodging && currentTime - this.lastDodgeTime >= dodgeCooldown) {
             this.setVelocityX(-5000);
+            this.setVelocityY(0);
             this.body.gravity.y = -1024;
             this.isDodging = true;
             this.lastDodgeTime = currentTime;
             setTimeout(() => {
                 this.setVelocityX(0);
+                this.setVelocityY(0);
                 this.isDodging = false;
                 this.body.gravity.y = 0;
             }, this.dodgelvl * 10 + 300);
