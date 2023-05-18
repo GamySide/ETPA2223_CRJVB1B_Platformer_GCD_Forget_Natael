@@ -41,8 +41,8 @@ export default class Niveau1 extends Phaser.Scene {
         
         this.player = new Player(this, 4*256, 14*256,"reparion");
         this.littleOne = new BugliansNRJ(this,10*256,13*256,"bugliansNRJ");
-        this.littleOne.setOffset(0, 0)
         this.littleOne.setSize(20, 20)
+        this.littleOne.setOffset(128, 128)
         this.littleOne.setScale(0.5)
         this.detritus = new Detritus(this, 20*256, 14.67*256,"detritus");
         this.detritus.setSize(800, 100)
