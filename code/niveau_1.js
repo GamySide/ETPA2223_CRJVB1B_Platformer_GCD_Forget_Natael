@@ -62,6 +62,7 @@ export default class Niveau1 extends Phaser.Scene {
         this.physics.world.setBounds(0*256, 0*256, 208*256, 20*256);
         this.cameras.main.startFollow(this.player);
         this.cameras.main.setBounds(0*256, 0*256, 208*256, 20*256);
+        this.cameras.main.setZoom(0.25);
         console.log("test");
     }
 

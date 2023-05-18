@@ -1,6 +1,6 @@
 import Niveau1 from "./niveau_1.js"
-const WIDTH = 4640;
-const HEIGHT = 2610;
+const WIDTH = 1160;
+const HEIGHT = 652.5;
 const ZOOM_FACTOR = 3;
 
 const SHARED_CONFIG = {
