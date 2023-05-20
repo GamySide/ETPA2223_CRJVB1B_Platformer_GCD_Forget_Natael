@@ -45,10 +45,15 @@ export default class Niveau1 extends Phaser.Scene {
         this.littleOne.setOffset(128, 128)
         this.littleOne.setScale(0.5)
         this.detritus = new Detritus(this, 20*256, 14.67*256,"detritus");
-        this.detritus.setSize(800, 100)
-        this.detritus.setOffset(0, 456)
+        this.detritus.setSize(800, 25)
+        this.detritus.setOffset(0, 531)
         this.detritus.setScale(1)
+        this.dummy = new Dummy(this, 30*256, 14.67*256,"dummy");
+        this.dummy.setSize(256, 512)
+        this.dummy.setOffset(0, 0)
+        this.dummy.setScale(1)
         this.physics.add.collider(this.player, platform)
+        this.physics.add.collider(this.dummy, platform)
         this.physics.add.overlap(this.player, this.littleOne, () => {
             this.player.emit('absorbtion', { information: 'énergie absorbé' });
             this.littleOne.emit('contact', { information: 'Contact détecté' });

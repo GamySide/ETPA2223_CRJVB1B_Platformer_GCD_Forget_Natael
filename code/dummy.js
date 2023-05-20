@@ -24,7 +24,6 @@ export class Dummy extends Phaser.Physics.Arcade.Sprite {
     }
 
     update() {
-       
     }
     initEvents() {
         this.scene.events.on(Phaser.Scenes.Events.UPDATE, this.update, this);
