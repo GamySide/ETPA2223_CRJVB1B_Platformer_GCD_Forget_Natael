@@ -19,7 +19,7 @@ export default class Niveau1 extends Phaser.Scene {
         this.load.spritesheet('dummy', '../asset_lvl1/dummy.png',{ frameWidth: 256, frameHeight: 512 });
         this.load.spritesheet('bugliansNRJ', '../asset_lvl1/soulsCollect.png',{ frameWidth: 256, frameHeight: 256});
         this.load.spritesheet('detritus', '../asset_lvl1/ferraille.png',{ frameWidth: 356, frameHeight: 800});
-        this.load.image("hitbox", "../assets_lvl1/hitbox.png",{ frameWidth: 356, frameHeight: 800});
+        this.load.image("Hitbox", "../assets/Hitbox.png");
     }
 
 
@@ -66,7 +66,7 @@ export default class Niveau1 extends Phaser.Scene {
         this.physics.add.overlap(this.player, this.detritus, () => {
             this.player.emit('ouch', { information: 'aie' });
         });
-
+        this.Hitbox = this.physics.add.sprite(this.player.posX + 100, this.player.posY + 10, 'Hitbox');
 
         this.physics.world.setBounds(0*256, 0*256, 208*256, 20*256);
         this.cameras.main.startFollow(this.player);
