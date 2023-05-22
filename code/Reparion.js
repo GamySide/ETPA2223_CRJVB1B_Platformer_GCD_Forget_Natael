@@ -33,7 +33,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         this.contactOccured = false;
         this.dodgeExecuted = false;
         this.lastDodgeTime = 0;
-        this.lastcombo1Time = 0;
+        this.lastComboTime = 0;
         this.isDodging = false;
         this.isAttacking = false;
         this.isHurt = false;
@@ -62,6 +62,25 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
             select: false,
         };
 
+        // Combo d'attaques
+        /*this.comboAttacks = [
+            () => {
+                // Logique de la première attaque du combo
+                console.log('Attaque 1');
+            },
+            () => {
+                // Logique de la deuxième attaque du combo
+                console.log('Attaque 2');
+            },
+            () => {
+                // Logique de la troisième attaque du combo
+                console.log('Attaque 3');
+            }
+        ];*/
+
+        // Index de l'attaque en cours dans le combo
+        this.currentAttackIndex = 0;
+
         console.log("test");
 
         // Paramètres
@@ -70,8 +89,6 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     }
 
     update() {
-        // Constante pour le temps actuel
-        const currentTime = Date.now();
 
         // Déplacement à gauche
         if (this.clavier.Q.isDown && this.body.onFloor() && !this.isDodging && !this.isAttacking) {
@@ -79,8 +96,8 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
             this.move = true;
             this.facingLeft = true;
             this.facingRight = false;
-        } 
-        
+        }
+
         // Déplacement à droite
         else if (this.clavier.D.isDown && this.body.onFloor() && !this.isDodging && !this.isAttacking) {
             this.setVelocityX(1024);
@@ -101,8 +118,8 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
                 }, 256);
             }, 256);
             this.body.setGravityY(0);
-        } 
-        
+        }
+
         // Saut à droite
         else if (this.clavier.SPACE.isDown && this.clavier.D.isDown && this.body.onFloor() && !this.isDodging && !this.isAttacking) {
             this.setVelocityX(1024);
@@ -115,8 +132,8 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
                 }, 256);
             }, 256);
             this.body.setGravityY(0);
-        } 
-        
+        }
+
         // Saut stationnaire
         else if (this.clavier.SPACE.isDown && this.body.onFloor() && !this.isDodging && !this.isAttacking) {
             this.setAccelerationY(-4096);
@@ -128,20 +145,20 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
                 }, 256);
             }, 256);
             this.body.setGravityY(0);
-        } 
-        
+        }
+
         // Aucun mouvement
         else if (this.body.onFloor() && !this.move && !this.isDodging && !this.isAttacking) {
             this.setVelocityX(0);
         }
 
         // Dash vers droite
-        if (this.clavier.SHIFT.isDown && this.clavier.D.isDown && !this.isDodging && currentTime - this.lastDodgeTime >= dodgeCooldown && !this.isAttacking) {
+        if (this.clavier.SHIFT.isDown && this.clavier.D.isDown && !this.isDodging && Date.now() - this.lastDodgeTime >= dodgeCooldown && !this.isAttacking) {
             this.setVelocityX(5000);
             this.setVelocityY(0);
             this.body.gravity.y = -1024;
             this.isDodging = true;
-            this.lastDodgeTime = currentTime;
+            this.lastDodgeTime = Date.now();
             setTimeout(() => {
                 this.setVelocityX(0);
                 this.setVelocityY(0);
@@ -151,12 +168,12 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         }
 
         // Dash vers gauche
-        if (this.clavier.SHIFT.isDown && this.clavier.Q.isDown && !this.isDodging && currentTime - this.lastDodgeTime >= dodgeCooldown) {
+        if (this.clavier.SHIFT.isDown && this.clavier.Q.isDown && !this.isDodging && Date.now() - this.lastDodgeTime >= dodgeCooldown) {
             this.setVelocityX(-5000);
             this.setVelocityY(0);
             this.body.gravity.y = -1024;
             this.isDodging = true;
-            this.lastDodgeTime = currentTime;
+            this.lastDodgeTime = Date.now();
             setTimeout(() => {
                 this.setVelocityX(0);
                 this.setVelocityY(0);
@@ -194,20 +211,56 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
             }
         });
 
-        // On attaque à droite
-        if (this.clavier.A.isDown && !this.dodge && this.facingRight == true) {
+        //constante pour le temps actuel
+        const currentTime = Date.now();
+
+        // Gestion du combo d'attaques
+        /*this.canAttack = currentTime - this.lastComboTime >= atkCooldown;
+        const comboMaxTime = 1000; // Temps maximum entre les attaques pour maintenir le combo
+        if (this.canAttack && this.comboCount === 0) {
+            this.lastComboTime = currentTime;
+        }
+        this.comboTimer = currentTime - this.lastComboTime;
+        if (this.comboTimer >= comboMaxTime) {
+            this.comboCount = 0;
+        }
+
+        // Gestion des contrôles
+        if (this.clavier.A.isDown && !this.dodge && this.facingRight) {
+            if (this.canAttack && this.comboTimer <= comboMaxTime && this.comboCount < 3) {
+                this.isAttacking = true;
+                this.emit('currentlyAttacking', { information: 'attaque en cours' });
+                this.lastAttackTime = currentTime;
+
+                this.comboAttacks[this.currentAttackIndex](); // Appel de la fonction d'attaque spécifique du combo
+
+                this.currentAttackIndex = Math.min(this.currentAttackIndex + 1, this.comboAttacks.length - 1);
+                this.comboCount++;
+                this.canAttack = false;
+                this.comboTimer = 0;
+
+                setTimeout(() => {
+                    this.setSize(256, 512);
+                    this.setOffset(0, 0);
+                    this.isAttacking = false;
+                    this.emit('i am weak', { information: 'hello' });
+                }, 500);
+            } else {
+                // Réinitialisation du comboCount si le temps écoulé dépasse le temps maximum
+                if (this.comboTimer >= comboMaxTime) {
+                    this.comboCount = 0;
+                }
+                this.canAttack = true;
+                this.comboTimer = 0;
+            }
+        }*/
+
+        //combo1 vers droite
+        if (this.clavier.A.isDown && !this.dodge && this.facingRight && !this.move && !this.facingLeft) {
             this.setSize(630, 768);
             this.setOffset(0, -256);
-            this.isAttacking = true;
-            this.emit('currentlyAttacking', { information: 'attaque en cours'});
-            setTimeout(() => {
-                this.setSize(256, 512);
-                this.setOffset(0, 0);
-                this.isAttacking = false;
-                this.emit('i am weak', { information: 'hello'});
-            }, 500);
         }
-        
+
         this.contactOccured = false;
         this.move = false;
     }
