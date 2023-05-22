@@ -1,4 +1,5 @@
 const dodgeCooldown = 1000;
+const atkCooldown = 500;
 
 export class Player extends Phaser.Physics.Arcade.Sprite {
     constructor(scene, x, y, sprite) {
@@ -32,8 +33,12 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         this.contactOccured = false;
         this.dodgeExecuted = false;
         this.lastDodgeTime = 0;
+        this.lastcombo1Time = 0;
         this.isDodging = false;
+        this.isAttacking = false;
         this.isHurt = false;
+        this.facingLeft = false;
+        this.facingRight = true;
 
         // Contrôles
         this.clavier = this.scene.input.keyboard.addKeys('Q,D,SPACE,SHIFT,A,Z,E,R,X,ALT,CTRL,F');
@@ -63,20 +68,29 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         this.setOrigin(0.5, 0.5);
         this.setCollideWorldBounds(true);
     }
-    preload() {
-    }
-    create(){
-    }
+
     update() {
-        if (this.clavier.Q.isDown && this.body.onFloor() && !this.isDodging) {
+        // Constante pour le temps actuel
+        const currentTime = Date.now();
+
+        // Déplacement à gauche
+        if (this.clavier.Q.isDown && this.body.onFloor() && !this.isDodging && !this.isAttacking) {
             this.setVelocityX(-1024);
             this.move = true;
-        } else if (this.clavier.D.isDown && this.body.onFloor() && !this.isDodging) {
+            this.facingLeft = true;
+            this.facingRight = false;
+        } 
+        
+        // Déplacement à droite
+        else if (this.clavier.D.isDown && this.body.onFloor() && !this.isDodging && !this.isAttacking) {
             this.setVelocityX(1024);
             this.move = true;
+            this.facingLeft = false;
+            this.facingRight = true;
         }
 
-        if (this.clavier.SPACE.isDown && this.clavier.Q.isDown && this.body.onFloor() && !this.isDodging) {
+        // Saut à gauche
+        if (this.clavier.SPACE.isDown && this.clavier.Q.isDown && this.body.onFloor() && !this.isDodging && !this.isAttacking) {
             this.setVelocityX(-1024);
             this.setAccelerationY(-4096);
             setTimeout(() => {
@@ -87,7 +101,10 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
                 }, 256);
             }, 256);
             this.body.setGravityY(0);
-        } else if (this.clavier.SPACE.isDown && this.clavier.D.isDown && this.body.onFloor() && !this.isDodging) {
+        } 
+        
+        // Saut à droite
+        else if (this.clavier.SPACE.isDown && this.clavier.D.isDown && this.body.onFloor() && !this.isDodging && !this.isAttacking) {
             this.setVelocityX(1024);
             this.setAccelerationY(-4096);
             setTimeout(() => {
@@ -98,7 +115,10 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
                 }, 256);
             }, 256);
             this.body.setGravityY(0);
-        } else if (this.clavier.SPACE.isDown && this.body.onFloor() && !this.isDodging) {
+        } 
+        
+        // Saut stationnaire
+        else if (this.clavier.SPACE.isDown && this.body.onFloor() && !this.isDodging && !this.isAttacking) {
             this.setAccelerationY(-4096);
             setTimeout(() => {
                 this.body.gravity.y = -768;
@@ -108,12 +128,15 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
                 }, 256);
             }, 256);
             this.body.setGravityY(0);
-        } else if (this.body.onFloor() && !this.move && !this.isDodging) {
+        } 
+        
+        // Aucun mouvement
+        else if (this.body.onFloor() && !this.move && !this.isDodging && !this.isAttacking) {
             this.setVelocityX(0);
         }
 
-        const currentTime = Date.now();
-        if (this.clavier.SHIFT.isDown && this.clavier.D.isDown && !this.isDodging && currentTime - this.lastDodgeTime >= dodgeCooldown) {
+        // Dash vers droite
+        if (this.clavier.SHIFT.isDown && this.clavier.D.isDown && !this.isDodging && currentTime - this.lastDodgeTime >= dodgeCooldown && !this.isAttacking) {
             this.setVelocityX(5000);
             this.setVelocityY(0);
             this.body.gravity.y = -1024;
@@ -127,6 +150,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
             }, this.dodgelvl * 10 + 300);
         }
 
+        // Dash vers gauche
         if (this.clavier.SHIFT.isDown && this.clavier.Q.isDown && !this.isDodging && currentTime - this.lastDodgeTime >= dodgeCooldown) {
             this.setVelocityX(-5000);
             this.setVelocityY(0);
@@ -141,6 +165,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
             }, this.dodgelvl * 10 + 300);
         }
 
+        // On absorbe l'orbe d'énergie buglian
         this.on('absorbtion', (data) => {
             if (!this.contactOccured) {
                 console.log(data.information);
@@ -151,8 +176,9 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
             }
         });
 
+        // On prend un dégât
         this.on('ouch', (data) => {
-            if (!this.contactOccured && !this.hurt && !this.isDodging && !this.isHurt) {
+            if (!this.contactOccured && !this.hurt && !this.isDodging && !this.isHurt && !this.isAttacking) {
                 console.log(data.information);
                 this.hp -= 1;
                 console.log(this.hp);
@@ -168,7 +194,20 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
             }
         });
 
-
+        // On attaque à droite
+        if (this.clavier.A.isDown && !this.dodge && this.facingRight == true) {
+            this.setSize(630, 768);
+            this.setOffset(0, -256);
+            this.isAttacking = true;
+            this.emit('currentlyAttacking', { information: 'attaque en cours'});
+            setTimeout(() => {
+                this.setSize(256, 512);
+                this.setOffset(0, 0);
+                this.isAttacking = false;
+                this.emit('i am weak', { information: 'hello'});
+            }, 500);
+        }
+        
         this.contactOccured = false;
         this.move = false;
     }
