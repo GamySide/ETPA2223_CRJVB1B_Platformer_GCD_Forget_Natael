@@ -33,7 +33,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         this.dodgeExecuted = false;
         this.lastDodgeTime = 0;
         this.isDodging = false;
-        this.isHurt = false; 
+        this.isHurt = false;
 
         // Contrôles
         this.clavier = this.scene.input.keyboard.addKeys('Q,D,SPACE,SHIFT,A,Z,E,R,X,ALT,CTRL,F');
@@ -63,7 +63,14 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         this.setOrigin(0.5, 0.5);
         this.setCollideWorldBounds(true);
     }
-
+    preload() {
+        this.load.image("hitbox", "../assets/Hitbox.png");
+    }
+    create(){
+        this.hammerLowAtk1 = this.physics.add.sprite(6*256, 14*256, 'hitbox');
+        this.hammerLowAtk1.setSize(20, 20);
+        this.hammerLowAtk1.body.gravity.y = -1024;
+    }
     update() {
         if (this.clavier.Q.isDown && this.body.onFloor() && !this.isDodging) {
             this.setVelocityX(-1024);
