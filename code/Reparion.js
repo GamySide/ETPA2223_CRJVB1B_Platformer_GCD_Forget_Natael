@@ -39,6 +39,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         this.isHurt = false;
         this.facingLeft = false;
         this.facingRight = true;
+        this.atkType = 0;
 
         // Contrôles
         this.clavier = this.scene.input.keyboard.addKeys('Q,D,SPACE,SHIFT,A,Z,E,R,X,ALT,CTRL,F');
@@ -148,7 +149,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         }
 
         // Aucun mouvement
-        else if (this.body.onFloor() && !this.move && !this.isDodging && !this.isAttacking) {
+        if (this.body.onFloor() && !this.move && !this.isDodging) {
             this.setVelocityX(0);
         }
 
@@ -255,15 +256,12 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
             }
         }*/
 
-        //combo1 vers droite
-        if (this.clavier.A.isDown && !this.dodge && this.facingRight && !this.move && !this.facingLeft) {
-            this.setSize(630, 768);
-            this.setOffset(0, -256);
-        }
-
         this.contactOccured = false;
         this.move = false;
     }
+    
+
+    
 
     initEvents() {
         this.scene.events.on(Phaser.Scenes.Events.UPDATE, this.update, this);

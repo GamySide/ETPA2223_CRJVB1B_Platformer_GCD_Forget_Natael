@@ -30,6 +30,11 @@ export default class Niveau1 extends Phaser.Scene {
         this.attacking = false;
         this.notAttacking = true;
         this.touchYa = false;
+        this.typeAtk = 1;
+        this.lastReadTime = 0
+        this.cant = false;
+        this.faceLeft = false;
+        this.faceRight = true;
         //fin partie perso
 
 
@@ -70,11 +75,16 @@ export default class Niveau1 extends Phaser.Scene {
             if (this.attacking == true) {
                 this.dummy.emit('blup', { information: 'bloup bloup bloup' });
             }
+            if (this.attacking == false) {
+                this.player.emit('ouch', { information: 'aie' });
+            }
         });
         this.physics.add.overlap(this.player, this.detritus, () => {
             this.player.emit('ouch', { information: 'aie' });
         });
-        this.Hitbox = this.physics.add.sprite(this.player.posX + 100, this.player.posY + 10, 'Hitbox');
+
+        this.clavier = this.input.keyboard.addKeys('Q,D,SPACE,SHIFT,A,Z,E,R,X,ALT,CTRL,F');
+        this.cursors = this.input.keyboard.createCursorKeys();
 
         this.physics.world.setBounds(0 * 256, 0 * 256, 208 * 256, 20 * 256);
         this.cameras.main.startFollow(this.player);
@@ -85,37 +95,93 @@ export default class Niveau1 extends Phaser.Scene {
 
 
     update() {
-        this.player.on('currentlyAttacking', (data) => {
-            if (this.attacking == false) {
-                this.attacking = true;
-                console.log(data.information);
-                setTimeout(() => {
-                    this.attacking = false;
-                    setTimeout(() => {
-                        this.attacking = false;
-                        this.attacking = false;
-                    }, 250);
-                }, 250);
-            }
-        });
-        this.player.on('i am weak', (data) => {
-            if (this.notAttacking == true) {
-                this.notAttacking = false;
-                console.log(data.information);
-                setTimeout(() => {
-                    this.notAttacking = true;
-                    setTimeout(() => {
-                        this.notAttacking = true;
-                        this.notAttacking = true;
-                    }, 250);
-                }, 250);
-            }
-        });
+        const currentTime = Date.now();
+
         this.physics.add.overlap(this.player, this.littleOne, () => {
             this.player.emit('absorbtion', { information: 'énergie absorbé' });
             this.littleOne.emit('contact', { information: 'Contact détecté' });
             this.littleOne.destroy();
         });
+        if (this.clavier.Q.isDown) {
+            this.faceLeft = true;
+            this.faceRight = false;
+        }
+        if (this.clavier.D.isDown) {
+            this.faceLeft = false;
+            this.faceRight = true;
+        }
+        if (currentTime - this.lastReadTime >= 400) {
+            this.lastReadTime = currentTime;
+            if (this.clavier.A.isDown && !this.cant && this.faceRight == true) {
+                this.createAtkHammerRight(this.typeAtk)
+                this.time.delayedCall(1600, () => {
+                    this.cant = true;
+                    this.typeAtk = 1;
+                    this.player.setSize(256, 512);
+                    this.player.setOffset(0, 0);
+                }, this);
+            }
+            if (this.clavier.A.isDown && !this.cant && this.faceLeft == true) {
+                this.createAtkHammerLeft(this.typeAtk)
+                this.time.delayedCall(1600, () => {
+                    this.cant = true;
+                    this.typeAtk = 1;
+                    this.player.setSize(256, 512);
+                    this.player.setOffset(0, 0);
+                }, this);
+            }
+            this.cant = false;
+
+
+        }
+
+    }
+    createAtkHammerRight(valeur) {
+        if (valeur == 1) {
+            console.log(1);
+            this.player.setSize(640, 768);
+            this.player.setOffset(0, -256);
+            this.typeAtk = 2;
+            this.attacking = true;
+        }
+        if (valeur == 2) {
+            console.log(2);
+            this.player.setSize(1024, 512);
+            this.player.setOffset(0, 0);
+            this.typeAtk = 3;
+            this.attacking = true;
+        }
+        if (valeur == 3) {
+            console.log(3);
+            this.player.setSize(827, 640);
+            this.player.setOffset(0, -128);
+            this.attacking = true;
+        }
+    }
+
+    createAtkHammerLeft(valeur) {
+        if (valeur == 1) {
+            console.log(1);
+            this.player.setSize(640, 768);
+            this.player.setOffset(-384, -256);
+            this.typeAtk = 2;
+            this.attacking = true;
+        }
+        if (valeur == 2) {
+            console.log(2);
+            this.player.setSize(1024, 512);
+            this.player.setOffset(-768, 0);
+            this.typeAtk = 3;
+            this.attacking = true;
+        }
+        if (valeur == 3) {
+            console.log(3);
+            this.player.setSize(827, 640);
+            this.player.setOffset(-571, -128);
+            this.typeAtk = 1;
+            this.attacking = true;
+        }
+        this.attacking = false;
     }
 }
 
