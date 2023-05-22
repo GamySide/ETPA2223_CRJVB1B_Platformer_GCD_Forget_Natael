@@ -64,12 +64,8 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         this.setCollideWorldBounds(true);
     }
     preload() {
-        this.load.image("hitbox", "../assets/Hitbox.png");
     }
     create(){
-        this.hammerLowAtk1 = this.physics.add.sprite(6*256, 14*256, 'hitbox');
-        this.hammerLowAtk1.setSize(20, 20);
-        this.hammerLowAtk1.body.gravity.y = -1024;
     }
     update() {
         if (this.clavier.Q.isDown && this.body.onFloor() && !this.isDodging) {
@@ -171,6 +167,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
                 }, 1000);
             }
         });
+
 
         this.contactOccured = false;
         this.move = false;
