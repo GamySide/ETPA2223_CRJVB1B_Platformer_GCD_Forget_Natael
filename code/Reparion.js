@@ -1,5 +1,6 @@
 const dodgeCooldown = 1000;
 const atkCooldown = 500;
+const switchCooldown = 1000;
 
 export class Player extends Phaser.Physics.Arcade.Sprite {
     constructor(scene, x, y, sprite) {
@@ -34,12 +35,16 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         this.dodgeExecuted = false;
         this.lastDodgeTime = 0;
         this.lastComboTime = 0;
+        this.lastSwitchTime = 0;
         this.isDodging = false;
         this.isAttacking = false;
         this.isHurt = false;
         this.facingLeft = false;
         this.facingRight = true;
         this.atkType = 0;
+        this.cameraMode = false;
+        this.reparionMode = true;
+        this.mode = 0;
 
         // Contrôles
         this.clavier = this.scene.input.keyboard.addKeys('Q,D,SPACE,SHIFT,A,Z,E,R,X,ALT,CTRL,F');
@@ -91,24 +96,28 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
 
     update() {
 
+        const currentTime = Date.now();
+
         // Déplacement à gauche
-        if (this.clavier.Q.isDown && this.body.onFloor() && !this.isDodging && !this.isAttacking) {
+        if (this.clavier.Q.isDown && this.body.onFloor() && !this.isDodging && !this.isAttacking && this.reparionMode == true && this.cameraMode == false) {
             this.setVelocityX(-1024);
             this.move = true;
             this.facingLeft = true;
             this.facingRight = false;
         }
 
+
         // Déplacement à droite
-        else if (this.clavier.D.isDown && this.body.onFloor() && !this.isDodging && !this.isAttacking) {
+        else if (this.clavier.D.isDown && this.body.onFloor() && !this.isDodging && !this.isAttacking && this.reparionMode == true && this.cameraMode == false) {
             this.setVelocityX(1024);
             this.move = true;
             this.facingLeft = false;
             this.facingRight = true;
         }
 
+
         // Saut à gauche
-        if (this.clavier.SPACE.isDown && this.clavier.Q.isDown && this.body.onFloor() && !this.isDodging && !this.isAttacking) {
+        if (this.clavier.SPACE.isDown && this.clavier.Q.isDown && this.body.onFloor() && !this.isDodging && !this.isAttacking && this.reparionMode == true && this.cameraMode == false) {
             this.setVelocityX(-1024);
             this.setAccelerationY(-4096);
             setTimeout(() => {
@@ -121,8 +130,9 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
             this.body.setGravityY(0);
         }
 
+
         // Saut à droite
-        else if (this.clavier.SPACE.isDown && this.clavier.D.isDown && this.body.onFloor() && !this.isDodging && !this.isAttacking) {
+        else if (this.clavier.SPACE.isDown && this.clavier.D.isDown && this.body.onFloor() && !this.isDodging && !this.isAttacking && this.reparionMode == true && this.cameraMode == false) {
             this.setVelocityX(1024);
             this.setAccelerationY(-4096);
             setTimeout(() => {
@@ -135,8 +145,9 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
             this.body.setGravityY(0);
         }
 
+
         // Saut stationnaire
-        else if (this.clavier.SPACE.isDown && this.body.onFloor() && !this.isDodging && !this.isAttacking) {
+        else if (this.clavier.SPACE.isDown && this.body.onFloor() && !this.isDodging && !this.isAttacking && this.reparionMode == true && this.cameraMode == false) {
             this.setAccelerationY(-4096);
             setTimeout(() => {
                 this.body.gravity.y = -768;
@@ -148,13 +159,15 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
             this.body.setGravityY(0);
         }
 
+
         // Aucun mouvement
         if (this.body.onFloor() && !this.move && !this.isDodging) {
             this.setVelocityX(0);
         }
 
+
         // Dash vers droite
-        if (this.clavier.SHIFT.isDown && this.clavier.D.isDown && !this.isDodging && Date.now() - this.lastDodgeTime >= dodgeCooldown && !this.isAttacking) {
+        if (this.clavier.SHIFT.isDown && this.clavier.D.isDown && !this.isDodging && Date.now() - this.lastDodgeTime >= dodgeCooldown && !this.isAttacking && this.reparionMode == true && this.cameraMode == false) {
             this.setVelocityX(5000);
             this.setVelocityY(0);
             this.body.gravity.y = -1024;
@@ -168,8 +181,9 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
             }, this.dodgelvl * 10 + 300);
         }
 
+
         // Dash vers gauche
-        if (this.clavier.SHIFT.isDown && this.clavier.Q.isDown && !this.isDodging && Date.now() - this.lastDodgeTime >= dodgeCooldown) {
+        if (this.clavier.SHIFT.isDown && this.clavier.Q.isDown && !this.isDodging && Date.now() - this.lastDodgeTime >= dodgeCooldown && this.reparionMode == true && this.cameraMode == false) {
             this.setVelocityX(-5000);
             this.setVelocityY(0);
             this.body.gravity.y = -1024;
@@ -183,6 +197,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
             }, this.dodgelvl * 10 + 300);
         }
 
+
         // On absorbe l'orbe d'énergie buglian
         this.on('absorbtion', (data) => {
             if (!this.contactOccured) {
@@ -193,6 +208,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
                 this.contactOccured = true;
             }
         });
+
 
         // On prend un dégât
         this.on('ouch', (data) => {
@@ -212,8 +228,41 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
             }
         });
 
+
+        //definir le mode pour empecher mouvement pendant mode caméra
+
+        if (this.clavier.Z.isDown && this.mode == 0 && Date.now() - this.lastSwitchTime >= switchCooldown) {
+            this.lastSwitchTime = Date.now();
+            this.cameraMode = true;
+            this.mode = 1;
+            this.reparionMode = false;
+            console.log(this.mode);
+        }
+
+        if (this.clavier.Z.isDown && this.mode == 1 && Date.now() - this.lastSwitchTime >= switchCooldown) {
+            this.lastSwitchTime = Date.now();
+            this.cameraMode = false;
+            this.mode = 0;
+            this.reparionMode = true;
+            console.log(this.mode);
+        }
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
         //constante pour le temps actuel
-        const currentTime = Date.now();
+        //const currentTime = Date.now();
 
         // Gestion du combo d'attaques
         /*this.canAttack = currentTime - this.lastComboTime >= atkCooldown;
@@ -259,9 +308,9 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         this.contactOccured = false;
         this.move = false;
     }
-    
 
-    
+
+
 
     initEvents() {
         this.scene.events.on(Phaser.Scenes.Events.UPDATE, this.update, this);
