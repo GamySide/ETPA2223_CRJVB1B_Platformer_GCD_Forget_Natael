@@ -40,8 +40,8 @@ export class Dummy extends Phaser.Physics.Arcade.Sprite {
                     this.hurt = false;
                     setTimeout(() => {
                         this.isHurt = false;
-                    }, 401);
-                }, 401);
+                    }, 400);
+                }, 400);
             }
         });
     }
