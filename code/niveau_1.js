@@ -8,6 +8,8 @@ import { Dummy } from "./dummy.js"
 import { BugliansNRJ } from "./bugliansNRJ.js"
 import { Detritus } from "./detritus.js"
 import { Contacteur } from "./contacteur.js"
+import { Box } from "./box.js"
+
 
 export default class Niveau1 extends Phaser.Scene {
     constructor() {
@@ -27,6 +29,7 @@ export default class Niveau1 extends Phaser.Scene {
         this.load.spritesheet('reparion', '../asset_lvl1/reparion.png', { frameWidth: 256, frameHeight: 512 });
         //fin partie perso
 
+        this.load.spritesheet('box', '../asset_lvl1/box.png', { frameWidth: 256, frameHeight: 256 });
         this.load.spritesheet('contacteur', '../asset_lvl1/contacteur.png', { frameWidth: 512, frameHeight: 1024 });
         this.load.spritesheet('dummy', '../asset_lvl1/dummy.png', { frameWidth: 256, frameHeight: 512 });
         this.load.spritesheet('bugliansNRJ', '../asset_lvl1/soulsCollect.png', { frameWidth: 256, frameHeight: 256 });
@@ -56,7 +59,8 @@ export default class Niveau1 extends Phaser.Scene {
         this.mouseX = 0;
         this.mouseY = 0;
         this.tooFar = false;
-        this.touch = false;
+        this.touchContactor = false;
+        this.touchBox = false;
         this.interlevier = false;
         this.state = 0;
         //fin partie perso
@@ -153,7 +157,7 @@ export default class Niveau1 extends Phaser.Scene {
  
          });
          this.contacteur.on('pointerout', () => {
-             this.touch = false
+             this.touchContactor = false
              this.contacteurOutlineRed.alpha = 0; // Rend le contour invisible
          });*/
 
@@ -167,18 +171,18 @@ export default class Niveau1 extends Phaser.Scene {
         this.contacteurOutlineBlue.alpha = 0; // Le contour est invisible au début
         /*this.contacteur.on('pointerdown', () => {
             // Code à exécuter lors du clic sur l'objet contacteur
-            this.touch = true;
+            this.touchContactor = true;
             this.contacteurOutlineBlue.alpha = 1;
             this.contacteurOutlineRed.alpha = 0;
-            console.log(this.touch);
+            console.log(this.touchContactor);
             // Ajoutez ici votre code pour changer l'apparence du contacteur
         });
         this.contacteur.on('pointerup', () => {
             // Code à exécuter lors du clic sur l'objet contacteur
-            this.touch = false;
+            this.touchContactor = false;
             this.contacteurOutlineBlue.alpha = 0;
             this.contacteurOutlineRed.alpha = 1;
-            console.log(this.touch);
+            console.log(this.touchContactor);
             // Ajoutez ici votre code pour changer l'apparence du contacteur
         });*/
         // Créer le groupe d'affichage pour les outlines
@@ -199,6 +203,73 @@ export default class Niveau1 extends Phaser.Scene {
 
         this.physics.add.collider(this.player, this.contacteur)
         this.physics.add.collider(this.contacteur, platform)
+
+
+
+
+
+
+        this.box = new Box(this, 10 * 256, 13.67 * 256, "box");
+        this.box.setInteractive(); // Rendre l'objet interactif
+        this.box.setSize(256, 256);
+        this.box.setOffset(0, 0);
+        this.box.setScale(1);
+        this.box.setInteractive(); // Permet d'activer les événements de survol
+
+        this.boxOutlineRed = this.add.graphics();
+        this.boxOutlineBlue = this.add.graphics();
+        /* this.box.on('pointerover', () => {
+ 
+             this.boxOutlineRed.alpha = 1; // Rend le contour visible
+ 
+         });
+         this.box.on('pointerout', () => {
+             this.touchContactor = false
+             this.boxOutlineRed.alpha = 0; // Rend le contour invisible
+         });*/
+
+
+
+        this.boxOutlineRed.lineStyle(20, 0xff0000, 1);
+        this.boxOutlineRed.strokeRect(this.box.x + 256, this.box.y + 256, 256, 256);
+        this.boxOutlineRed.alpha = 0; // Le contour est invisible au début
+        this.boxOutlineBlue.lineStyle(20, 0x0000ff, 1);
+        this.boxOutlineBlue.strokeRect(this.box.x + 256, this.box.y + 256, 256, 256);
+        this.boxOutlineBlue.alpha = 0; // Le contour est invisible au début
+        /*this.box.on('pointerdown', () => {
+            // Code à exécuter lors du clic sur l'objet box
+            this.touchContactor = true;
+            this.boxOutlineBlue.alpha = 1;
+            this.boxOutlineRed.alpha = 0;
+            console.log(this.touchContactor);
+            // Ajoutez ici votre code pour changer l'apparence du box
+        });
+        this.box.on('pointerup', () => {
+            // Code à exécuter lors du clic sur l'objet box
+            this.touchContactor = false;
+            this.boxOutlineBlue.alpha = 0;
+            this.boxOutlineRed.alpha = 1;
+            console.log(this.touchContactor);
+            // Ajoutez ici votre code pour changer l'apparence du box
+        });*/
+        // Créer le groupe d'affichage pour les outlines
+        var outlinesGroupBox = this.add.group();
+
+        // Créer les outlines en tant qu'objets graphiques
+        var boxOutlineBlue = this.add.graphics();
+        var boxOutlineRed = this.add.graphics();
+
+        // Ajouter les outlines au groupe d'affichage
+        outlinesGroupBox.add(boxOutlineBlue);
+        outlinesGroupBox.add(boxOutlineRed);
+
+
+
+
+
+
+        this.physics.add.collider(this.player, this.box)
+        this.physics.add.collider(this.box, platform)
         this.clavier = this.input.keyboard.addKeys('Q,D,SPACE,SHIFT,A,Z,E,R,X,ALT,CTRL,F');
         this.cursors = this.input.keyboard.createCursorKeys();
 
@@ -225,18 +296,18 @@ export default class Niveau1 extends Phaser.Scene {
 
         this.contacteur.on('pointerdown', () => {
             // Code à exécuter lors du clic sur l'objet contacteur
-            this.touch = true;
+            this.touchContactor = true;
             this.contacteurOutlineBlue.alpha = 1;
             this.contacteurOutlineRed.alpha = 0;
-            console.log(this.touch);
+            console.log(this.touchContactor);
             // Ajoutez ici votre code pour changer l'apparence du contacteur
         });
         this.contacteur.on('pointerup', () => {
             // Code à exécuter lors du clic sur l'objet contacteur
-            this.touch = false;
+            this.touchContactor = false;
             this.contacteurOutlineBlue.alpha = 0;
             this.contacteurOutlineRed.alpha = 1;
-            console.log(this.touch);
+            console.log(this.touchContactor);
             // Ajoutez ici votre code pour changer l'apparence du contacteur
         });
         this.contacteur.on('pointerover', () => {
@@ -245,9 +316,41 @@ export default class Niveau1 extends Phaser.Scene {
 
         });
         this.contacteur.on('pointerout', () => {
-            this.touch = false
+            this.touchContactor = false
             this.contacteurOutlineRed.alpha = 0; // Rend le contour invisible
         });
+
+
+
+
+
+        
+        this.box.on('pointerdown', () => {
+            // Code à exécuter lors du clic sur l'objet box
+            this.touchBox = true;
+            this.boxOutlineBlue.alpha = 1;
+            this.boxOutlineRed.alpha = 0;
+            console.log(this.touchBox);
+            // Ajoutez ici votre code pour changer l'apparence du box
+        });
+        this.box.on('pointerup', () => {
+            // Code à exécuter lors du clic sur l'objet box
+            this.touchBox = false;
+            this.boxOutlineBlue.alpha = 0;
+            this.boxOutlineRed.alpha = 1;
+            console.log(this.touchBox);
+            // Ajoutez ici votre code pour changer l'apparence du box
+        });
+        this.box.on('pointerover', () => {
+
+            this.boxOutlineRed.alpha = 1; // Rend le contour visible
+
+        });
+        this.box.on('pointerout', () => {
+            this.touchBox = false
+            this.boxOutlineRed.alpha = 0; // Rend le contour invisible
+        });
+
 
 
 
@@ -367,13 +470,13 @@ export default class Niveau1 extends Phaser.Scene {
 
 
         //pour le contacteur (à revoir plus tard)
-        if (this.touch == false) {
+        if (this.touchContactor == false) {
             //console.log("STOP")
             this.contacteurOutlineRed.clear();  // Effacer l'outline rouge
             this.contacteurOutlineRed.lineStyle(10, 0xFF0000);  // Définir le style de ligne rouge
             this.contacteurOutlineRed.strokeRect(this.contacteur.x - 226, this.contacteur.y - 512, 450, 1024);  // Dessiner l'outline rouge
         }
-        if (this.touch == true && this.cameraMode == true) {
+        if (this.touchContactor == true && this.cameraMode == true) {
             this.contacteurOutlineBlue.clear();  // Effacer l'outline bleu
             this.contacteurOutlineBlue.lineStyle(10, 0x0000FF);  // Définir le style de ligne bleue
             this.contacteurOutlineBlue.strokeRect(this.contacteur.x - 226, this.contacteur.y - 512, 450, 1024);  // Dessiner l'outline bleu
@@ -385,6 +488,31 @@ export default class Niveau1 extends Phaser.Scene {
             this.contacteurOutlineRed.x = this.contacteur.x;
             this.contacteurOutlineRed.y = this.contacteur.y;
             // Redessiner les outlines aux nouvelles positions du contacteur
+
+        }
+
+
+
+
+        //pour le box (à revoir plus tard)
+        if (this.touchBox == false) {
+            //console.log("STOP")
+            this.boxOutlineRed.clear();  // Effacer l'outline rouge
+            this.boxOutlineRed.lineStyle(10, 0xFF0000);  // Définir le style de ligne rouge
+            this.boxOutlineRed.strokeRect(this.box.x + 256, this.box.y + 256, 256, 256);
+        }
+        if (this.touchBox == true && this.cameraMode == true) {
+            this.boxOutlineBlue.clear();  // Effacer l'outline bleu
+            this.boxOutlineBlue.lineStyle(10, 0x0000FF);  // Définir le style de ligne bleue
+            this.boxOutlineBlue.strokeRect(this.box.x + 256, this.box.y + 256, 256, 256);
+            //console.log("ooououououo very scary")
+            this.box.x = this.input.activePointer.worldX;
+            this.box.y = this.input.activePointer.worldY;
+            this.boxOutlineBlue.x = this.box.x;
+            this.boxOutlineBlue.y = this.box.y;
+            this.boxOutlineRed.x = this.box.x;
+            this.boxOutlineRed.y = this.box.y;
+            // Redessiner les outlines aux nouvelles positions du box
 
         }
          
@@ -406,7 +534,7 @@ export default class Niveau1 extends Phaser.Scene {
 
     }
     //à revoir plus tard
-    refreshDisplay() {
+    refreshDisplayContactor() {
         // Mettre à jour les coordonnées du contacteur
         this.contacteur.x = this.objetSuiveur.x;
         this.contacteur.y = this.objetSuiveur.y;
@@ -416,6 +544,21 @@ export default class Niveau1 extends Phaser.Scene {
         contacteurOutlineBlue.y = this.contacteur.y;
         contacteurOutlineRed.x = this.contacteur.x;
         contacteurOutlineRed.y = this.contacteur.y;
+
+        // Autres opérations de rafraîchissement de l'affichage
+        // ...
+    }
+    //à revoir plus tard
+    refreshDisplayBox() {
+        // Mettre à jour les coordonnées du box
+        this.box.x = this.objetSuiveur.x;
+        this.box.y = this.objetSuiveur.y;
+
+        // Mettre à jour les positions des outlines en fonction du box
+        boxOutlineBlue.x = this.box.x;
+        boxOutlineBlue.y = this.box.y;
+        boxOutlineRed.x = this.box.x;
+        boxOutlineRed.y = this.box.y;
 
         // Autres opérations de rafraîchissement de l'affichage
         // ...
