@@ -36,6 +36,9 @@ export default class Niveau1 extends Phaser.Scene {
         this.load.spritesheet('detritus', '../asset_lvl1/ferraille.png', { frameWidth: 356, frameHeight: 800 });
         this.load.spritesheet('levier', '../asset_lvl1/lever.png', { frameWidth: 128, frameHeight: 128 });
         this.load.spritesheet('porte', '../asset_lvl1/piston.png', { frameWidth: 256, frameHeight: 1536 });
+        this.load.spritesheet('porteClose', '../asset_lvl1/pistonClose.png', { frameWidth: 256, frameHeight: 1536 });
+        this.load.spritesheet('button', '../asset_lvl1/red_button.png', { frameWidth: 260, frameHeight: 280 });
+        this.load.spritesheet('pc', '../asset_lvl1/ordinateur.png', { frameWidth: 260, frameHeight: 280 });
     }
 
 
@@ -63,23 +66,51 @@ export default class Niveau1 extends Phaser.Scene {
         this.touchBox = false;
         this.interlevier = false;
         this.state = 0;
+        this.buttonPress = false;
+        this.buttonporteIsClosed = true;
+        this.leverporteIsClosed = true;
+        this.buttonstate = 0;
+        this.paralaxSlowLeft = false;
+        this.paralaxSlowRight = false;
         //fin partie perso
 
         const level1 = this.add.tilemap("map");
         const tileset = level1.addTilesetImage("placholder_sol", "tileset");
-        this.fond1 = this.add.image(0, 2320, 'fond1');
+        this.fond1 = this.physics.add.sprite(0, 2320, 'fond1');
         this.fond1.setScale(15);
-        this.fond2 = this.add.image(19200, 2320, 'fond2');
+        this.fond1.body.gravity.y = -1024;
+        this.fond2 = this.physics.add.sprite(19200, 2320, 'fond2');
         this.fond2.setScale(15);
-        this.fond3 = this.add.image(38400, 2320, 'fond1');
+        this.fond2.body.gravity.y = -1024;
+        this.fond3 = this.physics.add.sprite(38400, 2320, 'fond1');
         this.fond3.setScale(15);
-        this.fond4 = this.add.image(57600, 2320, 'fond2');
+        this.fond3.body.gravity.y = -1024;
+        this.fond4 = this.physics.add.sprite(57600, 2320, 'fond2');
         this.fond4.setScale(15)
+        this.fond4.body.gravity.y = -1024;
+        this.fond5 = this.physics.add.sprite(76800, 2320, 'fond1');
+        this.fond5.setScale(15)
+        this.fond5.body.gravity.y = -1024;
         const platform = level1.createLayer("platform", tileset);
         platform.setCollisionByProperty({ estSolide: true });
 
-        this.lever = this.physics.add.sprite(45*256, 14*256,'levier');
+        this.lever = this.physics.add.sprite(45 * 256, 14 * 256, 'levier');
         this.lever.body.gravity.y = -1024;
+        this.button = this.physics.add.sprite(55 * 256, 14 * 256, 'button');
+        this.button.setSize(128, 100);
+
+        this.anims.create({
+            key: 'push',
+            frames: this.anims.generateFrameNumbers('button', { start: 0, end: 4 }),
+            frameRate: 4,
+            repeat: 0
+        });
+        this.anims.create({
+            key: 'depush',
+            frames: this.anims.generateFrameNumbers('button', { start: 0, end: 0 }),
+            frameRate: 4,
+            repeat: 0
+        });
 
         this.anims.create({
             key: 'on',
@@ -94,8 +125,8 @@ export default class Niveau1 extends Phaser.Scene {
             repeat: 1
         });
 
-        this.porte = this.physics.add.sprite(50*256, 12.75*256,'porte');
-        this.porte.body.gravity.y = -1024;
+        this.porteLevier = this.physics.add.sprite(50 * 256, 12.75 * 256, 'porte');
+        this.porteLevier.body.gravity.y = -1024;
 
         this.anims.create({
             key: 'open',
@@ -103,6 +134,20 @@ export default class Niveau1 extends Phaser.Scene {
             frameRate: 10,
             repeat: 0
         });
+        this.anims.create({
+            key: 'close',
+            frames: this.anims.generateFrameNumbers('porteClose', { start: 0, end: 9 }),
+            frameRate: 10,
+            repeat: 0
+        });
+
+        this.porteButton = this.physics.add.sprite(60 * 256, 12.75 * 256, 'porte');
+        this.porteButton.body.gravity.y = -1024;
+
+        this.pc1 = this.physics.add.sprite(75 * 256, 12.75 * 256, 'pc');
+        this.pc1.setSize(256, 200);
+        this.pc1.setOffset(0, 0);
+        this.pc1.setScale(10);
 
         //pour le perso, à mettre dans chaque scene!!!
         this.player = new Player(this, 4 * 256, 14 * 256, "reparion");
@@ -122,7 +167,8 @@ export default class Niveau1 extends Phaser.Scene {
         this.dummy.setOffset(0, 0);
         this.dummy.setScale(1);
         this.physics.add.collider(this.player, platform)
-        this.physics.add.collider(this.player, this.porte)
+        this.physics.add.collider(this.player, this.porteLevier)
+        this.physics.add.collider(this.player, this.porteButton)
         this.physics.add.collider(this.dummy, platform)
         this.physics.add.overlap(this.player, this.dummy, () => {
             if (this.attacking == true) {
@@ -136,10 +182,12 @@ export default class Niveau1 extends Phaser.Scene {
             this.player.emit('ouch', { information: 'aie' });
         });
 
-        
+
 
         this.physics.add.overlap(this.player, this.lever, () => {
-            this.interlevier = true;
+            if (this.clavier.R.isDown) {
+                this.interlevier = true;
+            }
         });
 
         this.contacteur = new Contacteur(this, 40 * 256, 13.67 * 256, "contacteur");
@@ -209,12 +257,11 @@ export default class Niveau1 extends Phaser.Scene {
 
 
 
-        this.box = new Box(this, 10 * 256, 13.67 * 256, "box");
+        this.box = new Box(this, 65 * 256, 13.67 * 256, "box");
         this.box.setInteractive(); // Rendre l'objet interactif
         this.box.setSize(256, 256);
         this.box.setOffset(0, 0);
         this.box.setScale(1);
-        this.box.setInteractive(); // Permet d'activer les événements de survol
 
         this.boxOutlineRed = this.add.graphics();
         this.boxOutlineBlue = this.add.graphics();
@@ -267,31 +314,41 @@ export default class Niveau1 extends Phaser.Scene {
 
 
 
-
+        this.physics.add.collider(this.button, this.box, () => {
+            this.buttonPress = true;
+        });
+        this.physics.add.overlap(this.player, this.pc1, () => {
+            if (this.clavier.R.isDown)
+                this.pc1enter = true;
+        });
         this.physics.add.collider(this.player, this.box)
+        this.physics.add.collider(platform, this.button)
+        this.physics.add.collider(platform, this.pc1)
         this.physics.add.collider(this.box, platform)
         this.clavier = this.input.keyboard.addKeys('Q,D,SPACE,SHIFT,A,Z,E,R,X,ALT,CTRL,F');
         this.cursors = this.input.keyboard.createCursorKeys();
 
-        this.physics.world.setBounds(0 * 256, 0 * 256, 208 * 256, 20 * 256);
+        this.physics.world.setBounds(0 * 256, 0 * 256, 180* 256, 20 * 256);
 
 
         //pour le perso, à mettre dans chaque scene!!!
         this.cameras.main.startFollow(this.player);
         //fin partie perso
 
-        this.cameras.main.setBounds(0 * 256, 0 * 256, 208 * 256, 20 * 256);
+        this.cameras.main.setBounds(0 * 256, 0 * 256, 180 * 256, 20 * 256);
         this.cameras.main.setZoom(0.25);
         console.log("test");
         this.input.setDefaultCursor('none');
         this.objetSuiveur = this.add.sprite(4 * 256, 14 * 256, 'cross');
+        this.pc1.setImmovable(true);
 
     }
 
 
     update() {
-        this.porte.setImmovable(true);
-        
+        this.porteLevier.setImmovable(true);
+        this.porteButton.setImmovable(true);
+
 
 
         this.contacteur.on('pointerdown', () => {
@@ -324,7 +381,7 @@ export default class Niveau1 extends Phaser.Scene {
 
 
 
-        
+
         this.box.on('pointerdown', () => {
             // Code à exécuter lors du clic sur l'objet box
             this.touchBox = true;
@@ -408,7 +465,7 @@ export default class Niveau1 extends Phaser.Scene {
 
         if (this.reparionMode) {
             this.cameras.main.startFollow(this.player);
-            this.cameras.main.setBounds(0 * 256, 9 * 256, 208 * 256, 10 * 256);
+            this.cameras.main.setBounds(0 * 256, 9 * 256, 180 * 256, 10 * 256);
         }
 
         if (this.clavier.Q.isDown) {
@@ -464,6 +521,7 @@ export default class Niveau1 extends Phaser.Scene {
             this.cameraMode = false;
             this.mode = 0;
             this.reparionMode = true;
+            this.box.body.gravity.y = 0;
             console.log(this.mode);
         }
 
@@ -494,13 +552,13 @@ export default class Niveau1 extends Phaser.Scene {
 
 
 
-        //pour le box (à revoir plus tard)
+        /*//pour le box (à revoir plus tard)
         if (this.touchBox == false) {
             //console.log("STOP")
             this.boxOutlineRed.clear();  // Effacer l'outline rouge
             this.boxOutlineRed.lineStyle(10, 0xFF0000);  // Définir le style de ligne rouge
             this.boxOutlineRed.strokeRect(this.box.x + 256, this.box.y + 256, 256, 256);
-        }
+        }*/
         if (this.touchBox == true && this.cameraMode == true) {
             this.boxOutlineBlue.clear();  // Effacer l'outline bleu
             this.boxOutlineBlue.lineStyle(10, 0x0000FF);  // Définir le style de ligne bleue
@@ -512,17 +570,89 @@ export default class Niveau1 extends Phaser.Scene {
             this.boxOutlineBlue.y = this.box.y;
             this.boxOutlineRed.x = this.box.x;
             this.boxOutlineRed.y = this.box.y;
+            this.box.body.gravity.y = -1024;
             // Redessiner les outlines aux nouvelles positions du box
 
         }
-         
-        if(this.interlevier == true && this.clavier.R.isDown && this.state == 0){
+
+        if (this.interlevier == true && this.state == 0 && this.leverporteIsClosed == true) {
             console.log('clic')
             this.lever.anims.play('on', true);
-            this.porte.anims.play('open', true);
-            this.porte.setOffset(0,-650)
+            this.porteLevier.anims.play('open', true);
+            this.porteLevier.setOffset(0, -650)
             this.state = 1;
+            this.time.delayedCall(1000, () => {
+                this.leverporteIsClosed = false;
+            }, this);
         }
+        else if (this.interlevier == true && this.state == 1 && this.leverporteIsClosed == false) {
+            console.log('clic')
+            this.lever.anims.play('off', true);
+            this.porteLevier.anims.play('close', true);
+            this.porteLevier.setOffset(0, 0)
+            this.state = 0;
+            this.time.delayedCall(1000, () => {
+                this.leverporteIsClosed = true;
+            }, this);
+        }
+
+        if (this.buttonPress == true && this.buttonporteIsClosed == true) {
+            this.button.anims.play('push', true);
+            this.porteButton.anims.play('open', true);
+            this.porteButton.setOffset(0, -650);
+            this.time.delayedCall(1000, () => {
+                this.buttonporteIsClosed = false;
+                this.buttonstate = 1;
+            }, this);
+
+        }
+        else if (this.buttonPress == false && this.buttonporteIsClosed == false) {
+            this.button.anims.play('depush', true);
+            this.porteButton.anims.play('close', true);
+            this.porteButton.setOffset(0, 0);
+            this.time.delayedCall(1000, () => {
+                this.buttonporteIsClosed = true;
+                this.buttonstate = 0;
+            }, this);
+        }
+        if(this.pc1enter == true){
+            location.reload();
+        }
+        this.player.on('right', (data) => {
+                this.fond1.setVelocityX(-512);
+                this.fond2.setVelocityX(-512);
+                this.fond3.setVelocityX(-512);
+                this.fond4.setVelocityX(-512);
+                this.fond5.setVelocityX(-512);
+        });
+        this.player.on('left', (data) => {
+                this.fond1.setVelocityX(+512);
+                this.fond2.setVelocityX(+512);
+                this.fond3.setVelocityX(+512);
+                this.fond4.setVelocityX(+512);
+                this.fond5.setVelocityX(+512);
+        });
+        this.player.on('stationnaire', (data) => {
+            this.fond1.setVelocityX(0);
+            this.fond2.setVelocityX(0);
+            this.fond3.setVelocityX(0);
+            this.fond4.setVelocityX(0);
+            this.fond5.setVelocityX(0);
+        });
+        
+
+        
+        
+        
+            
+        
+
+        this.buttonPress = false;
+        this.interlevier = false;
+        this.paralaxSlowLeft = false;
+        this.paralaxSlowRight = false;
+        
+        
 
 
 

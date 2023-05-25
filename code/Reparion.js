@@ -104,6 +104,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
             this.move = true;
             this.facingLeft = true;
             this.facingRight = false;
+            this.emit('left', { information: 'go go go' });
         }
 
 
@@ -113,6 +114,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
             this.move = true;
             this.facingLeft = false;
             this.facingRight = true;
+            this.emit('right', { information: 'go go go' });
         }
 
 
@@ -120,6 +122,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         if (this.clavier.SPACE.isDown && this.clavier.Q.isDown && this.body.onFloor() && !this.isDodging && !this.isAttacking && this.reparionMode == true && this.cameraMode == false) {
             this.setVelocityX(-1024);
             this.setAccelerationY(-4096);
+            this.emit('left', { information: 'go go go' });
             setTimeout(() => {
                 this.body.gravity.y = -768;
                 this.setAccelerationY(0);
@@ -135,6 +138,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         else if (this.clavier.SPACE.isDown && this.clavier.D.isDown && this.body.onFloor() && !this.isDodging && !this.isAttacking && this.reparionMode == true && this.cameraMode == false) {
             this.setVelocityX(1024);
             this.setAccelerationY(-4096);
+            this.emit('right', { information: 'go go go' });
             setTimeout(() => {
                 this.body.gravity.y = -768;
                 this.setAccelerationY(0);
@@ -163,6 +167,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         // Aucun mouvement
         if (this.body.onFloor() && !this.move && !this.isDodging) {
             this.setVelocityX(0);
+            this.emit('stationnaire', { information: 'stop' });
         }
 
 
@@ -172,6 +177,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
             this.setVelocityY(0);
             this.body.gravity.y = -1024;
             this.isDodging = true;
+            this.emit('rightdash', { information: 'gotta go' });
             this.lastDodgeTime = Date.now();
             setTimeout(() => {
                 this.setVelocityX(0);
@@ -188,6 +194,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
             this.setVelocityY(0);
             this.body.gravity.y = -1024;
             this.isDodging = true;
+            this.emit('leftdash', { information: 'gotta go' });
             this.lastDodgeTime = Date.now();
             setTimeout(() => {
                 this.setVelocityX(0);
