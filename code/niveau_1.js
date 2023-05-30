@@ -197,52 +197,7 @@ export default class Niveau1 extends Phaser.Scene {
         this.contacteur.setScale(1);
         this.contacteur.setInteractive(); // Permet d'activer les événements de survol
 
-        this.contacteurOutlineRed = this.add.graphics();
-        this.contacteurOutlineBlue = this.add.graphics();
-        /* this.contacteur.on('pointerover', () => {
- 
-             this.contacteurOutlineRed.alpha = 1; // Rend le contour visible
- 
-         });
-         this.contacteur.on('pointerout', () => {
-             this.touchContactor = false
-             this.contacteurOutlineRed.alpha = 0; // Rend le contour invisible
-         });*/
-
-
-
-        this.contacteurOutlineRed.lineStyle(20, 0xff0000, 1);
-        this.contacteurOutlineRed.strokeRect(this.contacteur.x - 226, this.contacteur.y - 512, 450, 1024);
-        this.contacteurOutlineRed.alpha = 0; // Le contour est invisible au début
-        this.contacteurOutlineBlue.lineStyle(20, 0x0000ff, 1);
-        this.contacteurOutlineBlue.strokeRect(this.contacteur.x - 226, this.contacteur.y - 512, 450, 1024);
-        this.contacteurOutlineBlue.alpha = 0; // Le contour est invisible au début
-        /*this.contacteur.on('pointerdown', () => {
-            // Code à exécuter lors du clic sur l'objet contacteur
-            this.touchContactor = true;
-            this.contacteurOutlineBlue.alpha = 1;
-            this.contacteurOutlineRed.alpha = 0;
-            console.log(this.touchContactor);
-            // Ajoutez ici votre code pour changer l'apparence du contacteur
-        });
-        this.contacteur.on('pointerup', () => {
-            // Code à exécuter lors du clic sur l'objet contacteur
-            this.touchContactor = false;
-            this.contacteurOutlineBlue.alpha = 0;
-            this.contacteurOutlineRed.alpha = 1;
-            console.log(this.touchContactor);
-            // Ajoutez ici votre code pour changer l'apparence du contacteur
-        });*/
-        // Créer le groupe d'affichage pour les outlines
-        var outlinesGroup = this.add.group();
-
-        // Créer les outlines en tant qu'objets graphiques
-        var contacteurOutlineBlue = this.add.graphics();
-        var contacteurOutlineRed = this.add.graphics();
-
-        // Ajouter les outlines au groupe d'affichage
-        outlinesGroup.add(contacteurOutlineBlue);
-        outlinesGroup.add(contacteurOutlineRed);
+       
 
 
 
@@ -263,52 +218,7 @@ export default class Niveau1 extends Phaser.Scene {
         this.box.setOffset(0, 0);
         this.box.setScale(1);
 
-        this.boxOutlineRed = this.add.graphics();
-        this.boxOutlineBlue = this.add.graphics();
-        /* this.box.on('pointerover', () => {
- 
-             this.boxOutlineRed.alpha = 1; // Rend le contour visible
- 
-         });
-         this.box.on('pointerout', () => {
-             this.touchContactor = false
-             this.boxOutlineRed.alpha = 0; // Rend le contour invisible
-         });*/
-
-
-
-        this.boxOutlineRed.lineStyle(20, 0xff0000, 1);
-        this.boxOutlineRed.strokeRect(this.box.x + 256, this.box.y + 256, 256, 256);
-        this.boxOutlineRed.alpha = 0; // Le contour est invisible au début
-        this.boxOutlineBlue.lineStyle(20, 0x0000ff, 1);
-        this.boxOutlineBlue.strokeRect(this.box.x + 256, this.box.y + 256, 256, 256);
-        this.boxOutlineBlue.alpha = 0; // Le contour est invisible au début
-        /*this.box.on('pointerdown', () => {
-            // Code à exécuter lors du clic sur l'objet box
-            this.touchContactor = true;
-            this.boxOutlineBlue.alpha = 1;
-            this.boxOutlineRed.alpha = 0;
-            console.log(this.touchContactor);
-            // Ajoutez ici votre code pour changer l'apparence du box
-        });
-        this.box.on('pointerup', () => {
-            // Code à exécuter lors du clic sur l'objet box
-            this.touchContactor = false;
-            this.boxOutlineBlue.alpha = 0;
-            this.boxOutlineRed.alpha = 1;
-            console.log(this.touchContactor);
-            // Ajoutez ici votre code pour changer l'apparence du box
-        });*/
-        // Créer le groupe d'affichage pour les outlines
-        var outlinesGroupBox = this.add.group();
-
-        // Créer les outlines en tant qu'objets graphiques
-        var boxOutlineBlue = this.add.graphics();
-        var boxOutlineRed = this.add.graphics();
-
-        // Ajouter les outlines au groupe d'affichage
-        outlinesGroupBox.add(boxOutlineBlue);
-        outlinesGroupBox.add(boxOutlineRed);
+        
 
 
 
@@ -336,7 +246,7 @@ export default class Niveau1 extends Phaser.Scene {
         //fin partie perso
 
         this.cameras.main.setBounds(0 * 256, 0 * 256, 180 * 256, 20 * 256);
-        this.cameras.main.setZoom(0.25);
+        this.cameras.main.setZoom(1);
         console.log("test");
         this.input.setDefaultCursor('none');
         this.objetSuiveur = this.add.sprite(4 * 256, 14 * 256, 'cross');
@@ -354,27 +264,21 @@ export default class Niveau1 extends Phaser.Scene {
         this.contacteur.on('pointerdown', () => {
             // Code à exécuter lors du clic sur l'objet contacteur
             this.touchContactor = true;
-            this.contacteurOutlineBlue.alpha = 1;
-            this.contacteurOutlineRed.alpha = 0;
             console.log(this.touchContactor);
             // Ajoutez ici votre code pour changer l'apparence du contacteur
         });
         this.contacteur.on('pointerup', () => {
             // Code à exécuter lors du clic sur l'objet contacteur
             this.touchContactor = false;
-            this.contacteurOutlineBlue.alpha = 0;
-            this.contacteurOutlineRed.alpha = 1;
             console.log(this.touchContactor);
             // Ajoutez ici votre code pour changer l'apparence du contacteur
         });
         this.contacteur.on('pointerover', () => {
 
-            this.contacteurOutlineRed.alpha = 1; // Rend le contour visible
 
         });
         this.contacteur.on('pointerout', () => {
             this.touchContactor = false
-            this.contacteurOutlineRed.alpha = 0; // Rend le contour invisible
         });
 
 
@@ -385,27 +289,21 @@ export default class Niveau1 extends Phaser.Scene {
         this.box.on('pointerdown', () => {
             // Code à exécuter lors du clic sur l'objet box
             this.touchBox = true;
-            this.boxOutlineBlue.alpha = 1;
-            this.boxOutlineRed.alpha = 0;
             console.log(this.touchBox);
             // Ajoutez ici votre code pour changer l'apparence du box
         });
         this.box.on('pointerup', () => {
             // Code à exécuter lors du clic sur l'objet box
             this.touchBox = false;
-            this.boxOutlineBlue.alpha = 0;
-            this.boxOutlineRed.alpha = 1;
             console.log(this.touchBox);
             // Ajoutez ici votre code pour changer l'apparence du box
         });
         this.box.on('pointerover', () => {
 
-            this.boxOutlineRed.alpha = 1; // Rend le contour visible
 
         });
         this.box.on('pointerout', () => {
-            this.touchBox = false
-            this.boxOutlineRed.alpha = 0; // Rend le contour invisible
+            this.touchBox = false;
         });
 
 
@@ -448,16 +346,6 @@ export default class Niveau1 extends Phaser.Scene {
             this.cameras.main.scrollX += dx * speed;
             this.cameras.main.scrollY += dy * speed;
 
-        }
-        if (this.input.activePointer.worldX - this.player.x >= distanceXpositif || this.input.activePointer.worldX - this.player.x <= distanceXnegatif) {
-            //console.log(this.tooFar)
-            this.cameras.main.stopFollow();
-            this.tooFar = true;
-
-        }
-        if (this.input.activePointer.worldX - this.player.x <= distanceXpositif && this.input.activePointer.worldX - this.player.x >= distanceXnegatif) {
-            this.tooFar = false;
-            //console.log(this.tooFar)
         }
 
 
@@ -512,7 +400,7 @@ export default class Niveau1 extends Phaser.Scene {
             this.cameraMode = true;
             this.mode = 1;
             this.reparionMode = false;
-            this.cameras.main.stopFollow(); // Arrêter de suivre le joueur
+            this.box.body.gravity.y = -1024;
             console.log(this.mode);
         }
 
@@ -530,22 +418,11 @@ export default class Niveau1 extends Phaser.Scene {
         //pour le contacteur (à revoir plus tard)
         if (this.touchContactor == false) {
             //console.log("STOP")
-            this.contacteurOutlineRed.clear();  // Effacer l'outline rouge
-            this.contacteurOutlineRed.lineStyle(10, 0xFF0000);  // Définir le style de ligne rouge
-            this.contacteurOutlineRed.strokeRect(this.contacteur.x - 226, this.contacteur.y - 512, 450, 1024);  // Dessiner l'outline rouge
         }
         if (this.touchContactor == true && this.cameraMode == true) {
-            this.contacteurOutlineBlue.clear();  // Effacer l'outline bleu
-            this.contacteurOutlineBlue.lineStyle(10, 0x0000FF);  // Définir le style de ligne bleue
-            this.contacteurOutlineBlue.strokeRect(this.contacteur.x - 226, this.contacteur.y - 512, 450, 1024);  // Dessiner l'outline bleu
             //console.log("ooououououo very scary")
             this.contacteur.x = this.input.activePointer.worldX;
             this.contacteur.y = this.input.activePointer.worldY;
-            this.contacteurOutlineBlue.x = this.contacteur.x;
-            this.contacteurOutlineBlue.y = this.contacteur.y;
-            this.contacteurOutlineRed.x = this.contacteur.x;
-            this.contacteurOutlineRed.y = this.contacteur.y;
-            // Redessiner les outlines aux nouvelles positions du contacteur
 
         }
 
@@ -555,22 +432,11 @@ export default class Niveau1 extends Phaser.Scene {
         /*//pour le box (à revoir plus tard)
         if (this.touchBox == false) {
             //console.log("STOP")
-            this.boxOutlineRed.clear();  // Effacer l'outline rouge
-            this.boxOutlineRed.lineStyle(10, 0xFF0000);  // Définir le style de ligne rouge
-            this.boxOutlineRed.strokeRect(this.box.x + 256, this.box.y + 256, 256, 256);
         }*/
         if (this.touchBox == true && this.cameraMode == true) {
-            this.boxOutlineBlue.clear();  // Effacer l'outline bleu
-            this.boxOutlineBlue.lineStyle(10, 0x0000FF);  // Définir le style de ligne bleue
-            this.boxOutlineBlue.strokeRect(this.box.x + 256, this.box.y + 256, 256, 256);
             //console.log("ooououououo very scary")
             this.box.x = this.input.activePointer.worldX;
             this.box.y = this.input.activePointer.worldY;
-            this.boxOutlineBlue.x = this.box.x;
-            this.boxOutlineBlue.y = this.box.y;
-            this.boxOutlineRed.x = this.box.x;
-            this.boxOutlineRed.y = this.box.y;
-            this.box.body.gravity.y = -1024;
             // Redessiner les outlines aux nouvelles positions du box
 
         }
