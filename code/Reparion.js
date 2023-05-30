@@ -45,6 +45,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         this.cameraMode = false;
         this.reparionMode = true;
         this.mode = 0;
+        this.touch = false;
 
         // Contrôles
         this.clavier = this.scene.input.keyboard.addKeys('Q,D,SPACE,SHIFT,A,Z,E,R,X,ALT,CTRL,F');
@@ -99,8 +100,8 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         const currentTime = Date.now();
 
         // Déplacement à gauche
-        if (this.clavier.Q.isDown && this.body.onFloor() && !this.isDodging && !this.isAttacking && this.reparionMode == true && this.cameraMode == false) {
-            this.setVelocityX(-1024);
+        if (this.clavier.Q.isDown && (this.body.blocked.down|| this.body.touching.down) && !this.isDodging && !this.isAttacking && this.reparionMode == true && this.cameraMode == false) {
+            this.setVelocityX(-128);
             this.move = true;
             this.facingLeft = true;
             this.facingRight = false;
@@ -109,8 +110,8 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
 
 
         // Déplacement à droite
-        else if (this.clavier.D.isDown && this.body.onFloor() && !this.isDodging && !this.isAttacking && this.reparionMode == true && this.cameraMode == false) {
-            this.setVelocityX(1024);
+        else if (this.clavier.D.isDown && (this.body.blocked.down|| this.body.touching.down) && !this.isDodging && !this.isAttacking && this.reparionMode == true && this.cameraMode == false) {
+            this.setVelocityX(128);
             this.move = true;
             this.facingLeft = false;
             this.facingRight = true;
@@ -119,53 +120,53 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
 
 
         // Saut à gauche
-        if (this.clavier.SPACE.isDown && this.clavier.Q.isDown && this.body.onFloor() && !this.isDodging && !this.isAttacking && this.reparionMode == true && this.cameraMode == false) {
-            this.setVelocityX(-1024);
-            this.setAccelerationY(-4096);
+        if (this.clavier.SPACE.isDown && this.clavier.Q.isDown && (this.body.blocked.down|| this.body.touching.down) && !this.isDodging && !this.isAttacking && this.reparionMode == true && this.cameraMode == false) {
+            this.setVelocityX(-128);
+            this.setVelocityY(-256);
             this.emit('left', { information: 'go go go' });
             setTimeout(() => {
-                this.body.gravity.y = -768;
+                this.body.gravity.y = -48;
                 this.setAccelerationY(0);
                 setTimeout(() => {
-                    this.body.gravity.y = 512;
-                }, 256);
-            }, 256);
+                    this.body.gravity.y = 600;
+                }, 16);
+            }, 16);
             this.body.setGravityY(0);
         }
 
 
         // Saut à droite
-        else if (this.clavier.SPACE.isDown && this.clavier.D.isDown && this.body.onFloor() && !this.isDodging && !this.isAttacking && this.reparionMode == true && this.cameraMode == false) {
-            this.setVelocityX(1024);
-            this.setAccelerationY(-4096);
+        else if (this.clavier.SPACE.isDown && this.clavier.D.isDown && (this.body.blocked.down|| this.body.touching.down) && !this.isDodging && !this.isAttacking && this.reparionMode == true && this.cameraMode == false) {
+            this.setVelocityX(128);
+            this.setVelocityY(-256);
             this.emit('right', { information: 'go go go' });
             setTimeout(() => {
-                this.body.gravity.y = -768;
+                this.body.gravity.y = -48;
                 this.setAccelerationY(0);
                 setTimeout(() => {
-                    this.body.gravity.y = 512;
-                }, 256);
-            }, 256);
+                    this.body.gravity.y = 600;
+                }, 16);
+            }, 16);
             this.body.setGravityY(0);
         }
 
 
         // Saut stationnaire
-        else if (this.clavier.SPACE.isDown && this.body.onFloor() && !this.isDodging && !this.isAttacking && this.reparionMode == true && this.cameraMode == false) {
-            this.setAccelerationY(-4096);
+        else if (this.clavier.SPACE.isDown && (this.body.blocked.down|| this.body.touching.down) && !this.isDodging && !this.isAttacking && this.reparionMode == true && this.cameraMode == false) {
+            this.setVelocityY(-256);
             setTimeout(() => {
-                this.body.gravity.y = -768;
+                this.body.gravity.y = -400;
                 this.setAccelerationY(0);
                 setTimeout(() => {
-                    this.body.gravity.y = 512;
-                }, 256);
-            }, 256);
+                    this.body.gravity.y = 600;
+                }, 16);
+            }, 16);
             this.body.setGravityY(0);
         }
 
 
         // Aucun mouvement
-        if (this.body.onFloor() && !this.move && !this.isDodging) {
+        if ((this.body.blocked.down|| this.body.touching.down) && !this.move && !this.isDodging ) {
             this.setVelocityX(0);
             this.emit('stationnaire', { information: 'stop' });
         }
@@ -173,14 +174,14 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
 
         // Dash vers droite
         if (this.clavier.SHIFT.isDown && this.clavier.D.isDown && !this.isDodging && Date.now() - this.lastDodgeTime >= dodgeCooldown && !this.isAttacking && this.reparionMode == true && this.cameraMode == false) {
-            this.setVelocityX(5000);
+            this.setVelocityX(300);
             this.setVelocityY(0);
-            this.body.gravity.y = -1024;
+            this.body.gravity.y = -600;
             this.isDodging = true;
             this.emit('rightdash', { information: 'gotta go' });
             this.lastDodgeTime = Date.now();
             setTimeout(() => {
-                this.setVelocityX(0);
+                this.setVelocityY(0);
                 this.setVelocityY(0);
                 this.isDodging = false;
                 this.body.gravity.y = 0;
@@ -190,14 +191,14 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
 
         // Dash vers gauche
         if (this.clavier.SHIFT.isDown && this.clavier.Q.isDown && !this.isDodging && Date.now() - this.lastDodgeTime >= dodgeCooldown && this.reparionMode == true && this.cameraMode == false) {
-            this.setVelocityX(-5000);
+            this.setVelocityX(-300);
             this.setVelocityY(0);
-            this.body.gravity.y = -1024;
+            this.body.gravity.y = -600;
             this.isDodging = true;
             this.emit('leftdash', { information: 'gotta go' });
             this.lastDodgeTime = Date.now();
             setTimeout(() => {
-                this.setVelocityX(0);
+                this.setVelocityY(0);
                 this.setVelocityY(0);
                 this.isDodging = false;
                 this.body.gravity.y = 0;
@@ -215,6 +216,10 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
                 this.contactOccured = true;
             }
         });
+
+
+
+        
 
 
         // On prend un dégât
@@ -297,7 +302,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
                 this.comboTimer = 0;
 
                 setTimeout(() => {
-                    this.setSize(256, 512);
+                    this.setSize(16, 32);
                     this.setOffset(0, 0);
                     this.isAttacking = false;
                     this.emit('i am weak', { information: 'hello' });

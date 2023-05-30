@@ -18,6 +18,7 @@ export class Box extends Phaser.Physics.Arcade.Sprite {
     }
 
     update() {
+        this.setVelocityX(0);
         
         
     }

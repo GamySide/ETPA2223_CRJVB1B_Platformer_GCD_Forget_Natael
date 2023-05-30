@@ -26,19 +26,19 @@ export default class Niveau1 extends Phaser.Scene {
 
 
         //pour le perso, à mettre dans chaque scene!!!
-        this.load.spritesheet('reparion', '../asset_lvl1/reparion.png', { frameWidth: 256, frameHeight: 512 });
+        this.load.spritesheet('reparion', '../asset_lvl1/reparion.png', { frameWidth: 16, frameHeight: 32 });
         //fin partie perso
 
-        this.load.spritesheet('box', '../asset_lvl1/box.png', { frameWidth: 256, frameHeight: 256 });
-        this.load.spritesheet('contacteur', '../asset_lvl1/contacteur.png', { frameWidth: 512, frameHeight: 1024 });
-        this.load.spritesheet('dummy', '../asset_lvl1/dummy.png', { frameWidth: 256, frameHeight: 512 });
-        this.load.spritesheet('bugliansNRJ', '../asset_lvl1/soulsCollect.png', { frameWidth: 256, frameHeight: 256 });
-        this.load.spritesheet('detritus', '../asset_lvl1/ferraille.png', { frameWidth: 356, frameHeight: 800 });
-        this.load.spritesheet('levier', '../asset_lvl1/lever.png', { frameWidth: 128, frameHeight: 128 });
-        this.load.spritesheet('porte', '../asset_lvl1/piston.png', { frameWidth: 256, frameHeight: 1536 });
-        this.load.spritesheet('porteClose', '../asset_lvl1/pistonClose.png', { frameWidth: 256, frameHeight: 1536 });
-        this.load.spritesheet('button', '../asset_lvl1/red_button.png', { frameWidth: 260, frameHeight: 280 });
-        this.load.spritesheet('pc', '../asset_lvl1/ordinateur.png', { frameWidth: 260, frameHeight: 280 });
+        this.load.spritesheet('box', '../asset_lvl1/box.png', { frameWidth: 16, frameHeight: 16 });
+        this.load.spritesheet('contacteur', '../asset_lvl1/contacteur.png', { frameWidth: 32, frameHeight: 64 });
+        this.load.spritesheet('dummy', '../asset_lvl1/dummy.png', { frameWidth: 16, frameHeight: 32 });
+        this.load.spritesheet('bugliansNRJ', '../asset_lvl1/soulsCollect.png', { frameWidth: 16, frameHeight: 16 });
+        this.load.spritesheet('detritus', '../asset_lvl1/ferraille.png', { frameWidth: 48, frameHeight: 16 });
+        this.load.spritesheet('levier', '../asset_lvl1/lever.png', { frameWidth: 16, frameHeight:16 });
+        this.load.spritesheet('porte', '../asset_lvl1/piston.png', { frameWidth: 16, frameHeight: 96 });
+        this.load.spritesheet('porteClose', '../asset_lvl1/pistonClose.png', { frameWidth: 16, frameHeight: 96 });
+        this.load.spritesheet('button', '../asset_lvl1/red_button.png', { frameWidth: 16, frameHeight: 16 });
+        this.load.spritesheet('pc', '../asset_lvl1/ordinateur.png', { frameWidth: 16, frameHeight: 16 });
     }
 
 
@@ -78,26 +78,26 @@ export default class Niveau1 extends Phaser.Scene {
         const tileset = level1.addTilesetImage("placholder_sol", "tileset");
         this.fond1 = this.physics.add.sprite(0, 2320, 'fond1');
         this.fond1.setScale(15);
-        this.fond1.body.gravity.y = -1024;
+        this.fond1.body.gravity.y = -600;
         this.fond2 = this.physics.add.sprite(19200, 2320, 'fond2');
         this.fond2.setScale(15);
-        this.fond2.body.gravity.y = -1024;
+        this.fond2.body.gravity.y = -600;
         this.fond3 = this.physics.add.sprite(38400, 2320, 'fond1');
         this.fond3.setScale(15);
-        this.fond3.body.gravity.y = -1024;
+        this.fond3.body.gravity.y = -600;
         this.fond4 = this.physics.add.sprite(57600, 2320, 'fond2');
         this.fond4.setScale(15)
-        this.fond4.body.gravity.y = -1024;
+        this.fond4.body.gravity.y = -600;
         this.fond5 = this.physics.add.sprite(76800, 2320, 'fond1');
         this.fond5.setScale(15)
-        this.fond5.body.gravity.y = -1024;
+        this.fond5.body.gravity.y = -600;
         const platform = level1.createLayer("platform", tileset);
         platform.setCollisionByProperty({ estSolide: true });
 
-        this.lever = this.physics.add.sprite(45 * 256, 14 * 256, 'levier');
-        this.lever.body.gravity.y = -1024;
-        this.button = this.physics.add.sprite(55 * 256, 14 * 256, 'button');
-        this.button.setSize(128, 100);
+        this.lever = this.physics.add.sprite(45 * 16, 14 * 16, 'levier');
+        this.lever.body.gravity.y = -600;
+        this.button = this.physics.add.sprite(55 * 16, 14 * 16, 'button');
+        this.button.setSize(8, 100);
 
         this.anims.create({
             key: 'push',
@@ -125,8 +125,8 @@ export default class Niveau1 extends Phaser.Scene {
             repeat: 1
         });
 
-        this.porteLevier = this.physics.add.sprite(50 * 256, 12.75 * 256, 'porte');
-        this.porteLevier.body.gravity.y = -1024;
+        this.porteLevier = this.physics.add.sprite(50 * 16, 12.75 * 16, 'porte');
+        this.porteLevier.body.gravity.y = -600;
 
         this.anims.create({
             key: 'open',
@@ -141,29 +141,29 @@ export default class Niveau1 extends Phaser.Scene {
             repeat: 0
         });
 
-        this.porteButton = this.physics.add.sprite(60 * 256, 12.75 * 256, 'porte');
-        this.porteButton.body.gravity.y = -1024;
+        this.porteButton = this.physics.add.sprite(60 * 16, 12.75 * 16, 'porte');
+        this.porteButton.body.gravity.y = -600;
 
-        this.pc1 = this.physics.add.sprite(75 * 256, 12.75 * 256, 'pc');
-        this.pc1.setSize(256, 200);
+        this.pc1 = this.physics.add.sprite(75 * 16, 12.75 * 16, 'pc');
+        this.pc1.setSize(16, 200);
         this.pc1.setOffset(0, 0);
         this.pc1.setScale(10);
 
         //pour le perso, à mettre dans chaque scene!!!
-        this.player = new Player(this, 4 * 256, 14 * 256, "reparion");
+        this.player = new Player(this, 4 * 16, 14 * 16, "reparion");
         //fin partie perso
 
 
-        this.littleOne = new BugliansNRJ(this, 10 * 256, 13 * 256, "bugliansNRJ");
+        this.littleOne = new BugliansNRJ(this, 10 * 16, 13 * 16, "bugliansNRJ");
         this.littleOne.setSize(20, 20);
-        this.littleOne.setOffset(128, 128);
+        this.littleOne.setOffset(8, 8);
         this.littleOne.setScale(0.5);
-        this.detritus = new Detritus(this, 20 * 256, 14.67 * 256, "detritus");
+        this.detritus = new Detritus(this, 20 * 16, 14.67 * 16, "detritus");
         this.detritus.setSize(800, 25);
         this.detritus.setOffset(0, 531);
         this.detritus.setScale(1);
-        this.dummy = new Dummy(this, 30 * 256, 14.67 * 256, "dummy");
-        this.dummy.setSize(256, 512);
+        this.dummy = new Dummy(this, 30 * 16, 14.67 * 16, "dummy");
+        this.dummy.setSize(16, 32);
         this.dummy.setOffset(0, 0);
         this.dummy.setScale(1);
         this.physics.add.collider(this.player, platform)
@@ -190,9 +190,9 @@ export default class Niveau1 extends Phaser.Scene {
             }
         });
 
-        this.contacteur = new Contacteur(this, 40 * 256, 13.67 * 256, "contacteur");
+        this.contacteur = new Contacteur(this, 40 * 16, 13.67 * 16, "contacteur");
         this.contacteur.setInteractive(); // Rendre l'objet interactif
-        this.contacteur.setSize(450, 1024);
+        this.contacteur.setSize(450, 64);
         this.contacteur.setOffset(30, 0);
         this.contacteur.setScale(1);
         this.contacteur.setInteractive(); // Permet d'activer les événements de survol
@@ -212,9 +212,9 @@ export default class Niveau1 extends Phaser.Scene {
 
 
 
-        this.box = new Box(this, 65 * 256, 13.67 * 256, "box");
+        this.box = new Box(this, 65 * 16, 13.67 * 16, "box");
         this.box.setInteractive(); // Rendre l'objet interactif
-        this.box.setSize(256, 256);
+        this.box.setSize(16, 16);
         this.box.setOffset(0, 0);
         this.box.setScale(1);
 
@@ -231,25 +231,26 @@ export default class Niveau1 extends Phaser.Scene {
             if (this.clavier.R.isDown)
                 this.pc1enter = true;
         });
-        this.physics.add.collider(this.player, this.box)
+        this.physics.add.collider(this.player, this.box,() => {
+        });
         this.physics.add.collider(platform, this.button)
         this.physics.add.collider(platform, this.pc1)
         this.physics.add.collider(this.box, platform)
         this.clavier = this.input.keyboard.addKeys('Q,D,SPACE,SHIFT,A,Z,E,R,X,ALT,CTRL,F');
         this.cursors = this.input.keyboard.createCursorKeys();
 
-        this.physics.world.setBounds(0 * 256, 0 * 256, 180* 256, 20 * 256);
+        this.physics.world.setBounds(0 * 16, 0 * 16, 63 * 16, 35 * 16);
 
 
         //pour le perso, à mettre dans chaque scene!!!
         this.cameras.main.startFollow(this.player);
         //fin partie perso
 
-        this.cameras.main.setBounds(0 * 256, 0 * 256, 180 * 256, 20 * 256);
-        this.cameras.main.setZoom(1);
+        this.cameras.main.setBounds(0 * 16, 0 * 16, 63 * 16, 35 * 16);
+        this.cameras.main.setZoom(2);
         console.log("test");
         this.input.setDefaultCursor('none');
-        this.objetSuiveur = this.add.sprite(4 * 256, 14 * 256, 'cross');
+        this.objetSuiveur = this.add.sprite(4 * 16, 14 * 16, 'cross');
         this.pc1.setImmovable(true);
 
     }
@@ -353,7 +354,7 @@ export default class Niveau1 extends Phaser.Scene {
 
         if (this.reparionMode) {
             this.cameras.main.startFollow(this.player);
-            this.cameras.main.setBounds(0 * 256, 9 * 256, 180 * 256, 10 * 256);
+            this.cameras.main.setBounds(0 * 16, 0 * 16, 63 * 16, 35 * 16);
         }
 
         if (this.clavier.Q.isDown) {
@@ -372,7 +373,7 @@ export default class Niveau1 extends Phaser.Scene {
                     this.cant = true;
                     this.attacking = false;
                     this.typeAtk = 1;
-                    this.player.setSize(256, 512);
+                    this.player.setSize(16, 32);
                     this.player.setOffset(0, 0);
                 }, this);
                 this.attacking = true;
@@ -383,7 +384,7 @@ export default class Niveau1 extends Phaser.Scene {
                     this.cant = true;
                     this.attacking = false;
                     this.typeAtk = 1;
-                    this.player.setSize(256, 512);
+                    this.player.setSize(16, 32);
                     this.player.setOffset(0, 0);
                 }, this);
                 this.attacking = true;
@@ -400,7 +401,7 @@ export default class Niveau1 extends Phaser.Scene {
             this.cameraMode = true;
             this.mode = 1;
             this.reparionMode = false;
-            this.box.body.gravity.y = -1024;
+            this.box.body.gravity.y = -600;
             console.log(this.mode);
         }
 
@@ -445,7 +446,7 @@ export default class Niveau1 extends Phaser.Scene {
             console.log('clic')
             this.lever.anims.play('on', true);
             this.porteLevier.anims.play('open', true);
-            this.porteLevier.setOffset(0, -650)
+            this.porteLevier.setOffset(0, -65.0)
             this.state = 1;
             this.time.delayedCall(1000, () => {
                 this.leverporteIsClosed = false;
@@ -465,7 +466,7 @@ export default class Niveau1 extends Phaser.Scene {
         if (this.buttonPress == true && this.buttonporteIsClosed == true) {
             this.button.anims.play('push', true);
             this.porteButton.anims.play('open', true);
-            this.porteButton.setOffset(0, -650);
+            this.porteButton.setOffset(0, -65.0);
             this.time.delayedCall(1000, () => {
                 this.buttonporteIsClosed = false;
                 this.buttonstate = 1;
@@ -485,18 +486,18 @@ export default class Niveau1 extends Phaser.Scene {
             location.reload();
         }
         this.player.on('right', (data) => {
-                this.fond1.setVelocityX(-512);
-                this.fond2.setVelocityX(-512);
-                this.fond3.setVelocityX(-512);
-                this.fond4.setVelocityX(-512);
-                this.fond5.setVelocityX(-512);
+                this.fond1.setVelocityX(-32);
+                this.fond2.setVelocityX(-32);
+                this.fond3.setVelocityX(-32);
+                this.fond4.setVelocityX(-32);
+                this.fond5.setVelocityX(-32);
         });
         this.player.on('left', (data) => {
-                this.fond1.setVelocityX(+512);
-                this.fond2.setVelocityX(+512);
-                this.fond3.setVelocityX(+512);
-                this.fond4.setVelocityX(+512);
-                this.fond5.setVelocityX(+512);
+                this.fond1.setVelocityX(+32);
+                this.fond2.setVelocityX(+32);
+                this.fond3.setVelocityX(+32);
+                this.fond4.setVelocityX(+32);
+                this.fond5.setVelocityX(+32);
         });
         this.player.on('stationnaire', (data) => {
             this.fond1.setVelocityX(0);
@@ -564,22 +565,22 @@ export default class Niveau1 extends Phaser.Scene {
     createAtkHammerRight(valeur) {
         if (valeur == 1 && this.reparionMode == true && this.cameraMode == false) {
             console.log(1);
-            this.player.setSize(640, 768);
-            this.player.setOffset(0, -256);
+            this.player.setSize(64.0, 76.8);
+            this.player.setOffset(0, -16);
             this.typeAtk = 2;
             this.attacking = true;
         }
         if (valeur == 2 && this.reparionMode == true && this.cameraMode == false) {
             console.log(2);
-            this.player.setSize(1024, 400);
-            this.player.setOffset(0, 112);
+            this.player.setSize(64, 40.0);
+            this.player.setOffset(0, 11.2);
             this.typeAtk = 3;
             this.attacking = true;
         }
         if (valeur == 3 && this.reparionMode == true && this.cameraMode == false) {
             console.log(3);
-            this.player.setSize(827, 640);
-            this.player.setOffset(0, -128);
+            this.player.setSize(82.7, 64.0);
+            this.player.setOffset(0, -8);
             this.attacking = true;
         }
     }
@@ -590,22 +591,22 @@ export default class Niveau1 extends Phaser.Scene {
     createAtkHammerLeft(valeur) {
         if (valeur == 1 && this.reparionMode == true && this.cameraMode == false) {
             console.log(1);
-            this.player.setSize(640, 768);
-            this.player.setOffset(-384, -256);
+            this.player.setSize(64, 76,8);
+            this.player.setOffset(-38.4, -16);
             this.typeAtk = 2;
             this.attacking = true;
         }
         if (valeur == 2 && this.reparionMode == true && this.cameraMode == false) {
             console.log(2);
-            this.player.setSize(1024, 400);
-            this.player.setOffset(-768, 112);
+            this.player.setSize(64, 40);
+            this.player.setOffset(-76.8, 11.2);
             this.typeAtk = 3;
             this.attacking = true;
         }
         if (valeur == 3 && this.reparionMode == true && this.cameraMode == false) {
             console.log(3);
-            this.player.setSize(827, 640);
-            this.player.setOffset(-571, -128);
+            this.player.setSize(82.7, 64.0);
+            this.player.setOffset(-57.1, -8);
             this.typeAtk = 1;
             this.attacking = true;
         }

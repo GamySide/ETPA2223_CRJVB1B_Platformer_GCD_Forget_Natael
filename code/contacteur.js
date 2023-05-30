@@ -18,7 +18,7 @@ export class Contacteur extends Phaser.Physics.Arcade.Sprite {
     }
 
     update() {
-        this.body.gravity.y = -1024;
+        this.body.gravity.y = -600;
         this.setImmovable(true);
     }
     initEvents() {

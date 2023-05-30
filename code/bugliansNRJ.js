@@ -21,7 +21,7 @@ export class BugliansNRJ extends Phaser.Physics.Arcade.Sprite {
 
     update() {
         if (this.collecter == false) {
-            this.body.gravity.y = -1024;
+            this.body.gravity.y = -600;
 
             this.on('contact', (data) => {
                 if (this.contactOccured == false) {
