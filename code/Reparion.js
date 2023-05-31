@@ -120,7 +120,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
 
 
         // Saut à gauche
-        if (this.clavier.SPACE.isDown && this.clavier.Q.isDown && (this.body.blocked.down|| this.body.touching.down) && !this.isDodging && !this.isAttacking && this.reparionMode == true && this.cameraMode == false) {
+        if (this.clavier.SPACE.isDown && this.clavier.Q.isDown && (this.body.blocked.down|| this.body.touching.down) && !this.isDodging && !this.isAttacking && this.reparionMode == true && this.cameraMode == false && this.hurt == false) {
             this.setVelocityX(-128);
             this.setVelocityY(-256);
             this.emit('left', { information: 'go go go' });
@@ -136,7 +136,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
 
 
         // Saut à droite
-        else if (this.clavier.SPACE.isDown && this.clavier.D.isDown && (this.body.blocked.down|| this.body.touching.down) && !this.isDodging && !this.isAttacking && this.reparionMode == true && this.cameraMode == false) {
+        else if (this.clavier.SPACE.isDown && this.clavier.D.isDown && (this.body.blocked.down|| this.body.touching.down) && !this.isDodging && !this.isAttacking && this.reparionMode == true && this.cameraMode == false && this.hurt == false) {
             this.setVelocityX(128);
             this.setVelocityY(-256);
             this.emit('right', { information: 'go go go' });
@@ -152,7 +152,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
 
 
         // Saut stationnaire
-        else if (this.clavier.SPACE.isDown && (this.body.blocked.down|| this.body.touching.down) && !this.isDodging && !this.isAttacking && this.reparionMode == true && this.cameraMode == false) {
+        else if (this.clavier.SPACE.isDown && (this.body.blocked.down|| this.body.touching.down) && !this.isDodging && !this.isAttacking && this.reparionMode == true && this.cameraMode == false && this.hurt == false) {
             this.setVelocityY(-256);
             setTimeout(() => {
                 this.body.gravity.y = -400;

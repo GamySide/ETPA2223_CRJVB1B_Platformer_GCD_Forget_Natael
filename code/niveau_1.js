@@ -79,18 +79,7 @@ export default class Niveau1 extends Phaser.Scene {
         this.fond1 = this.physics.add.sprite(0, 2320, 'fond1');
         this.fond1.setScale(15);
         this.fond1.body.gravity.y = -600;
-        this.fond2 = this.physics.add.sprite(19200, 2320, 'fond2');
-        this.fond2.setScale(15);
-        this.fond2.body.gravity.y = -600;
-        this.fond3 = this.physics.add.sprite(38400, 2320, 'fond1');
-        this.fond3.setScale(15);
-        this.fond3.body.gravity.y = -600;
-        this.fond4 = this.physics.add.sprite(57600, 2320, 'fond2');
-        this.fond4.setScale(15)
-        this.fond4.body.gravity.y = -600;
-        this.fond5 = this.physics.add.sprite(76800, 2320, 'fond1');
-        this.fond5.setScale(15)
-        this.fond5.body.gravity.y = -600;
+        
         const platform = level1.createLayer("platform", tileset);
         platform.setCollisionByProperty({ estSolide: true });
 
@@ -247,7 +236,7 @@ export default class Niveau1 extends Phaser.Scene {
         //fin partie perso
 
         this.cameras.main.setBounds(0 * 16, 0 * 16, 63 * 16, 35 * 16);
-        this.cameras.main.setZoom(2);
+        this.cameras.main.setZoom(1);
         console.log("test");
         this.input.setDefaultCursor('none');
         this.objetSuiveur = this.add.sprite(4 * 16, 14 * 16, 'cross');
@@ -485,27 +474,7 @@ export default class Niveau1 extends Phaser.Scene {
         if(this.pc1enter == true){
             location.reload();
         }
-        this.player.on('right', (data) => {
-                this.fond1.setVelocityX(-32);
-                this.fond2.setVelocityX(-32);
-                this.fond3.setVelocityX(-32);
-                this.fond4.setVelocityX(-32);
-                this.fond5.setVelocityX(-32);
-        });
-        this.player.on('left', (data) => {
-                this.fond1.setVelocityX(+32);
-                this.fond2.setVelocityX(+32);
-                this.fond3.setVelocityX(+32);
-                this.fond4.setVelocityX(+32);
-                this.fond5.setVelocityX(+32);
-        });
-        this.player.on('stationnaire', (data) => {
-            this.fond1.setVelocityX(0);
-            this.fond2.setVelocityX(0);
-            this.fond3.setVelocityX(0);
-            this.fond4.setVelocityX(0);
-            this.fond5.setVelocityX(0);
-        });
+        
         
 
         
