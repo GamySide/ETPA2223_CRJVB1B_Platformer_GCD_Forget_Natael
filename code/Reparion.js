@@ -319,7 +319,27 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
 
         this.contactOccured = false;
         this.move = false;
+        if(this.hp ==5){
+            this.emit('5life', { information: 'good' });
+        }
+        if(this.hp ==4){
+            this.emit('4life', { information: 'ok' });
+        }
+        if(this.hp ==3){
+            this.emit('3life', { information: 'meh' });
+        }
+        if(this.hp ==2){
+            this.emit('2life', { information: 'bruh' });
+        }
+        if(this.hp ==1){
+            this.emit('1life', { information: 'bad' });
+        }
+        if(this.hp ==0){
+            this.emit('0life', { information: 'dead' });
+            this.des
+        }
     }
+    
 
 
 

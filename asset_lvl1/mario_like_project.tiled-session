@@ -11,23 +11,23 @@
             "scaleInEditor": 1
         },
         "map_lvl1.json": {
-            "scale": 0.33,
+            "scale": 0.75,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 530.3030303030304,
-                "y": -127.27272727272725
+                "x": 562,
+                "y": 370.6666666666667
             }
         },
         "map_lvl1.json#placholder_sol": {
             "scaleInDock": 4
         }
     },
-    "last.imagePath": "C:/Users/game/Desktop/ETPA2223_CRJVB1B_Platformer_GCD_Forget_Natael/asset_lvl1",
-    "map.height": 36,
-    "map.lastUsedFormat": "json",
+    "last.imagePath": "C:/Users/game/Documents/GitHub/ETPA2223_CRJVB1B_Platformer_GCD_Forget_Natael/asset_lvl1",
+    "map.height": 15,
+    "map.lastUsedFormat": "tmx",
     "map.tileHeight": 16,
     "map.tileWidth": 16,
-    "map.width": 64,
+    "map.width": 26,
     "openFiles": [
         "map_lvl1.json"
     ],
