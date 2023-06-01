@@ -129,8 +129,8 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
                 this.setAccelerationY(0);
                 setTimeout(() => {
                     this.body.gravity.y = 600;
-                }, 16);
-            }, 16);
+                }, 100);
+            }, 100);
             this.body.setGravityY(0);
         }
 
@@ -145,8 +145,8 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
                 this.setAccelerationY(0);
                 setTimeout(() => {
                     this.body.gravity.y = 600;
-                }, 16);
-            }, 16);
+                }, 100);
+            }, 100);
             this.body.setGravityY(0);
         }
 
@@ -159,8 +159,8 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
                 this.setAccelerationY(0);
                 setTimeout(() => {
                     this.body.gravity.y = 600;
-                }, 16);
-            }, 16);
+                }, 100);
+            }, 100);
             this.body.setGravityY(0);
         }
 

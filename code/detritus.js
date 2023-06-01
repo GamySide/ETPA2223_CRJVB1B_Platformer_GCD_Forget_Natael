@@ -20,7 +20,6 @@ export class Detritus extends Phaser.Physics.Arcade.Sprite {
     }
 
     update() {
-        this.body.gravity.y = -600;
     }
     initEvents() {
         this.scene.events.on(Phaser.Scenes.Events.UPDATE, this.update, this);

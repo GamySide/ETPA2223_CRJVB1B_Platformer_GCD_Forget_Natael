@@ -5,6 +5,7 @@ const switchCooldown = 1000;
 
 import { Player } from "./Reparion.js"
 import { Dummy } from "./dummy.js"
+import { Ennemy } from "./ennemy.js"
 import { BugliansNRJ } from "./bugliansNRJ.js"
 import { Detritus } from "./detritus.js"
 import { Contacteur } from "./contacteur.js"
@@ -28,12 +29,13 @@ export default class Niveau1 extends Phaser.Scene {
         //pour le perso, à mettre dans chaque scene!!!
         this.load.spritesheet('reparion', '../asset_lvl1/reparion.png', { frameWidth: 16, frameHeight: 32 });
         //fin partie perso
-
+        this.load.spritesheet('ennemy', '../asset_lvl1/oponnent.png', { frameWidth: 16, frameHeight: 32 });
+        this.load.spritesheet('crazy', '../asset_lvl1/crazy.png', { frameWidth: 16, frameHeight: 32 });
         this.load.spritesheet('box', '../asset_lvl1/box.png', { frameWidth: 16, frameHeight: 16 });
         this.load.spritesheet('contacteur', '../asset_lvl1/contacteur.png', { frameWidth: 32, frameHeight: 64 });
         this.load.spritesheet('dummy', '../asset_lvl1/dummy.png', { frameWidth: 16, frameHeight: 32 });
         this.load.spritesheet('bugliansNRJ', '../asset_lvl1/soulsCollect.png', { frameWidth: 16, frameHeight: 16 });
-        this.load.spritesheet('detritus', '../asset_lvl1/ferraille.png', { frameWidth: 48, frameHeight: 16 });
+        this.load.spritesheet('detritus', '../asset_lvl1/ferraille.png', { frameWidth: 48, frameHeight: 33 });
         this.load.spritesheet('levier', '../asset_lvl1/lever.png', { frameWidth: 16, frameHeight: 16 });
         this.load.spritesheet('porte', '../asset_lvl1/piston.png', { frameWidth: 16, frameHeight: 96 });
         this.load.spritesheet('porteClose', '../asset_lvl1/pistonClose.png', { frameWidth: 16, frameHeight: 96 });
@@ -154,32 +156,68 @@ export default class Niveau1 extends Phaser.Scene {
         //fin partie perso
 
 
-        //this.littleOne = new BugliansNRJ(this, 10 * 16, 13 * 16, "bugliansNRJ");
-        //this.littleOne.setSize(20, 20);
-        //this.littleOne.setOffset(8, 8);
-        //this.littleOne.setScale(0.5);
-        //this.detritus = new Detritus(this, 20 * 16, 14.67 * 16, "detritus");
-        //this.detritus.setSize(800, 25);
-        //this.detritus.setOffset(0, 531);
-        //this.detritus.setScale(1);
-        //this.dummy = new Dummy(this, 10 * 16, 12 * 16, "dummy");
-        //this.dummy.setSize(16, 32);
-        //this.dummy.setOffset(0, 0);
-        //this.dummy.setScale(1);
+        this.littleOne = new BugliansNRJ(this, -160, -160, "bugliansNRJ");
+        this.littleOne.setSize(16, 16);
+        this.littleOne.setOffset(0, 0);
+        this.littleOne.setScale(0);
+        this.littleTwo = new BugliansNRJ(this, -160, -160, "bugliansNRJ");
+        this.littleTwo.setSize(16, 16);
+        this.littleTwo.setOffset(0, 0);
+        this.littleTwo.setScale(0);
+        this.detritus = new Detritus(this, 20 * 16, 12 * 16, "detritus");
+        this.detritus.setSize(48, 5);
+        this.detritus.setOffset(0, 28);
+        this.detritus.setScale(0);
+        this.dummy = new Dummy(this, 10 * 16, 12 * 16, "dummy");
+        this.dummy.setSize(16, 32);
+        this.dummy.setOffset(0, 0);
+        this.dummy.setScale(0);
+        this.ennemy = new Ennemy(this, 10 * 16, 12 * 16, "ennemy");
+        this.ennemy.setSize(16, 32);
+        this.ennemy.setOffset(0, 0);
+        this.ennemy.setScale(0);
+        this.crazy = new Ennemy(this, 10 * 16, 12 * 16, "crazy");
+        this.crazy.setSize(16, 32);
+        this.crazy.setOffset(0, 0);
+        this.crazy.setScale(0);
         this.physics.add.collider(this.player, platform)
         //this.physics.add.collider(this.player, this.porteLevier)
         //this.physics.add.collider(this.player, this.porteButton)
-        //this.physics.add.collider(this.dummy, platform)
-        /*this.physics.add.overlap(this.player, this.dummy, () => {
+        this.physics.add.collider(this.dummy, platform)
+        this.physics.add.overlap(this.player, this.dummy, () => {
             if (this.attacking == true) {
-                this.dummy.emit('blup', { information: 'bloup bloup bloup' });
+               this.dummy.setScale(0);
             }
             if (this.attacking == false) {
                 this.player.emit('ouch', { information: 'aie' });
             }
-        });*/
+        });
+        this.physics.add.collider(this.crazy, platform)
+        this.physics.add.overlap(this.player, this.crazy, () => {
+            if (this.attacking == true) {
+               this.crazy.setScale(0);
+            }
+            if (this.attacking == false) {
+                this.player.emit('ouch', { information: 'aie' });
+            }
+        });
+        this.physics.add.collider(this.ennemy, platform)
+        this.physics.add.overlap(this.player, this.ennemy, () => {
+                this.player.emit('ouch', { information: 'aie' });
+        });
+        this.physics.add.collider(this.detritus, platform)
         this.physics.add.overlap(this.player, this.detritus, () => {
             this.player.emit('ouch', { information: 'aie' });
+        });
+        this.physics.add.overlap(this.player, this.littleOne, () => {
+            this.player.emit('absorbtion', { information: 'énergie absorbé' });
+            this.littleOne.emit('contact', { information: 'Contact détecté' });
+            this.littleOne.destroy();
+        });
+        this.physics.add.overlap(this.player, this.littleTwo, () => {
+            this.player.emit('absorbtion', { information: 'énergie absorbé' });
+            this.littleTwo.emit('contact', { information: 'Contact détecté' });
+            this.littleTwo.destroy();
         });
 
 
@@ -276,7 +314,36 @@ export default class Niveau1 extends Phaser.Scene {
             frameRate: 1,
             repeat: 1
         });
-
+        this.anims.create({
+            key: 'dummy',
+            frames: this.anims.generateFrameNumbers('dummy', { start: 0, end: 1 }),
+            frameRate: 1,
+            repeat: 1
+        });
+        this.anims.create({
+            key: 'ennemyLeft',
+            frames: this.anims.generateFrameNumbers('ennemy', { start: 0, end: 5 }),
+            frameRate: 12,
+            repeat: -1
+        });
+        this.anims.create({
+            key: 'ennemyRight',
+            frames: this.anims.generateFrameNumbers('ennemy', { start: 6, end: 11 }),
+            frameRate: 12,
+            repeat: -1
+        });
+        this.anims.create({
+            key: 'crazyLeft',
+            frames: this.anims.generateFrameNumbers('crazy', { start: 0, end: 5 }),
+            frameRate: 12,
+            repeat: -1
+        });
+        this.anims.create({
+            key: 'crazyRight',
+            frames: this.anims.generateFrameNumbers('crazy', { start: 6, end: 11 }),
+            frameRate: 12,
+            repeat: -1
+        });
 
 
     }
@@ -346,11 +413,7 @@ export default class Niveau1 extends Phaser.Scene {
         //fin partie perso
 
 
-        /*this.physics.add.overlap(this.player, this.littleOne, () => {
-            this.player.emit('absorbtion', { information: 'énergie absorbé' });
-            this.littleOne.emit('contact', { information: 'Contact détecté' });
-            this.littleOne.destroy();
-        });*/
+        
 
 
         //pour le perso, à mettre dans chaque scene!!!
@@ -540,21 +603,144 @@ export default class Niveau1 extends Phaser.Scene {
         });
         this.player.on('0life', (data) => {
             this.playerHealth = 0;
-            location.reload();
+            
         });
+        if(this.playerHealth == 0){
+            location.reload();
+        }
 
         if (this.salle == 0) {
             this.cameras.main.setBounds(0 * 16, 0 * 16, 25 * 16, 14 * 16);
             this.physics.world.setBounds(0 * 16, 0 * 16, 25 * 16, 14 * 16);
+            this.littleOne.x = 14 * 16
+            this.littleOne.y = 12*16
+            this.littleOne.setScale(0.5)
 
         }
         if (this.salle == 1) {
             this.cameras.main.setBounds(26 * 16, 0 * 16, 25 * 16, 14 * 16);
             this.physics.world.setBounds(26 * 16, 0 * 16, 25 * 16, 14 * 16);
             if (this.canTP == true) {
+                this.littleTwo.x = 40 * 16
+                this.littleTwo.y = 10*16
+                this.littleTwo.setScale(0.5)
+                this.littleOne.setScale(0)
+                this.objectif.x = 205 + 26*16; 
+                this.objectif.y =115;
                 this.player.x = 28 * 16;
                 this.player.y = 12 * 16;
-                this.pc1.x = 49;
+                this.pc1.x = 50 * 16;
+
+            }
+        }
+        if (this.salle == 2) {
+            this.cameras.main.setBounds(52 * 16, 0 * 16, 25 * 16, 14 * 16);
+            this.physics.world.setBounds(52 * 16, 0 * 16, 25 * 16, 14 * 16);
+            if (this.canTP == true) {
+                this.detritus.x = 66 * 16
+                this.detritus.y = 12 * 16
+                this.detritus.setScale(1)
+                this.littleTwo.setScale(0)
+                this.objectif.x = 205 + 52*16; 
+                this.objectif.y =115;
+                this.player.x = 54 * 16;
+                this.player.y = 12 * 16;
+                this.pc1.x = 76 * 16;
+
+            }
+        }
+        if (this.salle == 3 ) {
+            this.cameras.main.setBounds(78 * 16, 0 * 16, 25 * 16, 14 * 16);
+            this.physics.world.setBounds(78 * 16, 0 * 16, 25 * 16, 14 * 16);
+            this.dummy.anims.play('dummy', true);
+            if (this.canTP == true) {
+                this.dummy.x = 92 * 16;
+                this.dummy.y = 12 * 16;
+                this.dummy.setScale(1);
+                this.detritus.setScale(0);
+                this.objectif.x = 205 + 78*16; 
+                this.objectif.y =115;
+                this.player.x = 80 * 16;
+                this.player.y = 12 * 16;
+                this.pc1.x = 102 * 16;
+
+            }
+        }
+        if (this.salle == 4 ) {
+            this.cameras.main.setBounds(104 * 16, 0 * 16, 25 * 16, 14 * 16);
+            this.physics.world.setBounds(104 * 16, 0 * 16, 25 * 16, 14 * 16);
+            
+            if (this.canTP == true) {
+                this.crazy.x = 118 * 16;
+                this.crazy.y = 12 * 16;
+                this.crazy.setScale(1);
+                this.crazy.setVelocityX(75);
+                this.crazy.anims.play('crazyRight', true);
+                this.dummy.setScale(0);
+                this.objectif.x = 205 + 104*16; 
+                this.objectif.y =115;
+                this.player.x = 106 * 16;
+                this.player.y = 12 * 16;
+                this.pc1.x = 128 * 16;
+            }
+            if (this.crazy.x <= (110 * 16)){
+                this.crazy.setVelocityX(75);
+                this.crazy.anims.play('crazyRight', true);
+            }
+            else if (this.crazy.x >= (125 * 16)){
+                this.crazy.setVelocityX(-75);
+                this.crazy.anims.play('crazyLeft', true);
+            }
+        }
+        if (this.salle == 5 ) {
+            this.cameras.main.setBounds(130 * 16, 0 * 16, 25 * 16, 14 * 16);
+            this.physics.world.setBounds(130 * 16, 0 * 16, 25 * 16, 14 * 16);
+            
+            if (this.canTP == true) {
+                this.ennemy.x = 144 * 16;
+                this.ennemy.y = 12 * 16;
+                this.ennemy.setScale(1);
+                this.ennemy.setVelocityX(-150);
+                this.ennemy.anims.play('ennemyRight', true);
+                this.crazy.setScale(0);
+                this.objectif.x = 205 + 130*16; 
+                this.objectif.y =115;
+                this.player.x = 132 * 16;
+                this.player.y = 12 * 16;
+                this.pc1.x = 154 * 16;
+            }
+            if (this.ennemy.x <= this.player.x - 32){
+                this.ennemy.setVelocityX(150);
+                this.ennemy.anims.play('ennemyRight', true);
+            }
+            else if (this.ennemy.x >= this.player.x + 32){
+                this.ennemy.setVelocityX(-150);
+                this.ennemy.anims.play('ennemyLeft', true);
+            }
+        }
+        if (this.salle == 6 ) {
+            this.cameras.main.setBounds(156 * 16, 0 * 16, 25 * 16, 14 * 16);
+            this.physics.world.setBounds(156 * 16, 0 * 16, 25 * 16, 14 * 16);
+            if (this.canTP == true) {
+                this.ennemy.x = 144 * 16;
+                this.ennemy.y = 12 * 16;
+                this.ennemy.setScale(1);
+                this.ennemy.setVelocityX(-150);
+                this.ennemy.anims.play('ennemyRight', true);
+                this.crazy.setScale(0);
+                this.objectif.x = 205 + 130*16; 
+                this.objectif.y =115;
+                this.player.x = 132 * 16;
+                this.player.y = 12 * 16;
+                this.pc1.x = 154 * 16;
+            }
+            if (this.ennemy.x <= this.player.x - 32){
+                this.ennemy.setVelocityX(150);
+                this.ennemy.anims.play('ennemyRight', true);
+            }
+            else if (this.ennemy.x >= this.player.x + 32){
+                this.ennemy.setVelocityX(-150);
+                this.ennemy.anims.play('ennemyLeft', true);
             }
         }
 
@@ -621,22 +807,22 @@ export default class Niveau1 extends Phaser.Scene {
     createAtkHammerRight(valeur) {
         if (valeur == 1 && this.reparionMode == true && this.cameraMode == false) {
             console.log(1);
-            this.player.setSize(64.0, 76.8);
-            this.player.setOffset(0, -16);
+            this.player.setSize(32.0, 38.4);
+            this.player.setOffset(0, -8);
             this.typeAtk = 2;
             this.attacking = true;
         }
         if (valeur == 2 && this.reparionMode == true && this.cameraMode == false) {
             console.log(2);
-            this.player.setSize(64, 40.0);
+            this.player.setSize(40, 20.0);
             this.player.setOffset(0, 11.2);
             this.typeAtk = 3;
             this.attacking = true;
         }
         if (valeur == 3 && this.reparionMode == true && this.cameraMode == false) {
             console.log(3);
-            this.player.setSize(82.7, 64.0);
-            this.player.setOffset(0, -8);
+            this.player.setSize(40, 32.0);
+            this.player.setOffset(0, 0);
             this.attacking = true;
         }
     }
@@ -647,22 +833,22 @@ export default class Niveau1 extends Phaser.Scene {
     createAtkHammerLeft(valeur) {
         if (valeur == 1 && this.reparionMode == true && this.cameraMode == false) {
             console.log(1);
-            this.player.setSize(64, 76, 8);
-            this.player.setOffset(-38.4, -16);
+            this.player.setSize(32, 38.4);
+            this.player.setOffset(-16, -8);
             this.typeAtk = 2;
             this.attacking = true;
         }
         if (valeur == 2 && this.reparionMode == true && this.cameraMode == false) {
             console.log(2);
-            this.player.setSize(64, 40);
-            this.player.setOffset(-76.8, 11.2);
+            this.player.setSize(40, 20);
+            this.player.setOffset(-24, 11.2);
             this.typeAtk = 3;
             this.attacking = true;
         }
         if (valeur == 3 && this.reparionMode == true && this.cameraMode == false) {
             console.log(3);
-            this.player.setSize(82.7, 64.0);
-            this.player.setOffset(-57.1, -8);
+            this.player.setSize(40, 32);
+            this.player.setOffset(-24, 0);
             this.typeAtk = 1;
             this.attacking = true;
         }
