@@ -303,7 +303,7 @@ export default class Niveau1 extends Phaser.Scene {
 
         this.cameras.main.setBounds(0 * 16, 0 * 16, 25 * 16, 14 * 16);
         this.cameras.main.setZoom(2.5);
-        console.log("test");
+        //console.log("test");
         this.input.setDefaultCursor('none');
         this.objetSuiveur = this.add.sprite(4 * 16, 14 * 16, 'cross');
         this.pc1.setImmovable(true);
@@ -376,13 +376,13 @@ export default class Niveau1 extends Phaser.Scene {
         this.contacteur.on('pointerdown', () => {
             // Code à exécuter lors du clic sur l'objet contacteur
             this.touchContactor = true;
-            console.log(this.touchContactor);
+            //console.log(this.touchContactor);
             // Ajoutez ici votre code pour changer l'apparence du contacteur
         });
         this.contacteur.on('pointerup', () => {
             // Code à exécuter lors du clic sur l'objet contacteur
             this.touchContactor = false;
-            console.log(this.touchContactor);
+            //console.log(this.touchContactor);
             // Ajoutez ici votre code pour changer l'apparence du contacteur
         });
         this.contacteur.on('pointerover', () => {
@@ -401,13 +401,13 @@ export default class Niveau1 extends Phaser.Scene {
         this.box.on('pointerdown', () => {
             // Code à exécuter lors du clic sur l'objet box
             this.touchBox = true;
-            console.log(this.touchBox);
+            //console.log(this.touchBox);
             // Ajoutez ici votre code pour changer l'apparence du box
         });
         this.box.on('pointerup', () => {
             // Code à exécuter lors du clic sur l'objet box
             this.touchBox = false;
-            console.log(this.touchBox);
+            //console.log(this.touchBox);
             // Ajoutez ici votre code pour changer l'apparence du box
         });
         this.box.on('pointerover', () => {
@@ -511,7 +511,7 @@ export default class Niveau1 extends Phaser.Scene {
             this.cameras.main.shake(100, 0.005);
             this.reparionMode = false;
             this.box.body.gravity.y = -600;
-            console.log(this.mode);
+            //console.log(this.mode);
         }
 
         if (this.clavier.Z.isDown && this.mode === 1 && Date.now() - this.lastSwitchTime >= switchCooldown) {
@@ -521,17 +521,17 @@ export default class Niveau1 extends Phaser.Scene {
             this.cameras.main.shake(100, 0.005);
             this.reparionMode = true;
             this.box.body.gravity.y = 0;
-            console.log(this.mode);
+            //console.log(this.mode);
         }
 
 
 
         //pour le contacteur (à revoir plus tard)
         if (this.touchContactor == false) {
-            console.log("STOP")
+            //console.log("STOP")
         }
         if (this.touchContactor == true && this.cameraMode == true) {
-            console.log("ooououououo very scary")
+            //console.log("ooououououo very scary")
             this.contacteur.x = this.input.activePointer.worldX;
             this.contacteur.y = this.input.activePointer.worldY;
 
@@ -553,7 +553,7 @@ export default class Niveau1 extends Phaser.Scene {
         }
 
         if (this.interlevier == true && this.state == 0 && this.leverporteIsClosed == true) {
-            console.log('clic')
+            //console.log('clic')
             this.lever.anims.play('on', true);
             this.porteLevier.anims.play('open', true);
             this.porteLevier.setOffset(0, -80.0)
@@ -563,7 +563,7 @@ export default class Niveau1 extends Phaser.Scene {
             }, this);
         }
         else if (this.interlevier == true && this.state == 1 && this.leverporteIsClosed == false) {
-            console.log('clic')
+            //console.log('clic')
             this.lever.anims.play('off', true);
             this.porteLevier.anims.play('close', true);
             this.porteLevier.setSize(0, 0)
@@ -739,6 +739,7 @@ export default class Niveau1 extends Phaser.Scene {
                 this.player.x = 106 * 16;
                 this.player.y = 12 * 16;
                 this.pc1.x = 128 * 16;
+                this.pc1.y = 8 * 16;
             }
         }
         if (this.salle == 5) {
@@ -755,8 +756,9 @@ export default class Niveau1 extends Phaser.Scene {
                 this.objectif.x = 205 + 130 * 16;
                 this.objectif.y = 115;
                 this.player.x = 132 * 16;
-                this.player.y = 12 * 16;
+                this.player.y = 8 * 16;
                 this.pc1.x = 154 * 16;
+                this.pc1.y = 8 * 16;
             }
             if (this.ennemy.x <= this.player.x - 32) {
                 this.ennemy.setVelocityX(150);
@@ -776,7 +778,7 @@ export default class Niveau1 extends Phaser.Scene {
                 this.objectif.x = 205 + 130 * 16;
                 this.objectif.y = 115;
                 this.player.x = 132 * 16;
-                this.player.y = 12 * 16;
+                this.player.y = 8 * 16;
                 this.pc1.x = 154 * 16;
             }
 
@@ -887,10 +889,11 @@ export default class Niveau1 extends Phaser.Scene {
                 this.player.y = 12 * 16;
                 this.pc1.x = 232 * 16;
             }
-            if (this.salle == 9) {
-                this.scene.start('Niveau1');
-            }
+            
 
+        }
+        if (this.salle == 9) {
+            location.reload();
         }
        
 
@@ -956,21 +959,21 @@ export default class Niveau1 extends Phaser.Scene {
     //pour le perso, à mettre dans chaque scene!!!
     createAtkHammerRight(valeur) {
         if (valeur == 1 && this.reparionMode == true && this.cameraMode == false) {
-            console.log(1);
+            //console.log(1);
             this.player.setSize(32.0, 38.4);
             this.player.setOffset(0, -8);
             this.typeAtk = 2;
             this.attacking = true;
         }
         if (valeur == 2 && this.reparionMode == true && this.cameraMode == false) {
-            console.log(2);
+            //console.log(2);
             this.player.setSize(40, 20.0);
             this.player.setOffset(0, 11.2);
             this.typeAtk = 3;
             this.attacking = true;
         }
         if (valeur == 3 && this.reparionMode == true && this.cameraMode == false) {
-            console.log(3);
+            //console.log(3);
             this.player.setSize(40, 32.0);
             this.player.setOffset(0, 0);
             this.attacking = true;
@@ -982,21 +985,21 @@ export default class Niveau1 extends Phaser.Scene {
     //pour le perso, à mettre dans chaque scene!!!
     createAtkHammerLeft(valeur) {
         if (valeur == 1 && this.reparionMode == true && this.cameraMode == false) {
-            console.log(1);
+            //console.log(1);
             this.player.setSize(32, 38.4);
             this.player.setOffset(-16, -8);
             this.typeAtk = 2;
             this.attacking = true;
         }
         if (valeur == 2 && this.reparionMode == true && this.cameraMode == false) {
-            console.log(2);
+            //console.log(2);
             this.player.setSize(40, 20);
             this.player.setOffset(-24, 11.2);
             this.typeAtk = 3;
             this.attacking = true;
         }
         if (valeur == 3 && this.reparionMode == true && this.cameraMode == false) {
-            console.log(3);
+            //console.log(3);
             this.player.setSize(40, 32);
             this.player.setOffset(-24, 0);
             this.typeAtk = 1;
