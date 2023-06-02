@@ -336,7 +336,8 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         }
         if(this.hp ==0){
             this.emit('0life', { information: 'dead' });
-            this.des
+            this.hp = 5;
+            this.nrj = 0;
         }
     }
     
