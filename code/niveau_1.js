@@ -37,8 +37,9 @@ export default class Niveau1 extends Phaser.Scene {
         this.load.spritesheet('bugliansNRJ', '../asset_lvl1/soulsCollect.png', { frameWidth: 16, frameHeight: 16 });
         this.load.spritesheet('detritus', '../asset_lvl1/ferraille.png', { frameWidth: 48, frameHeight: 33 });
         this.load.spritesheet('levier', '../asset_lvl1/lever.png', { frameWidth: 16, frameHeight: 16 });
-        this.load.spritesheet('porte', '../asset_lvl1/piston.png', { frameWidth: 16, frameHeight: 96 });
-        this.load.spritesheet('porteClose', '../asset_lvl1/pistonClose.png', { frameWidth: 16, frameHeight: 96 });
+        this.load.spritesheet('porte', '../asset_lvl1/piston.png', { frameWidth: 32, frameHeight: 192 });
+        this.load.spritesheet('laser', '../asset_lvl1/laser.png', { frameWidth: 32, frameHeight: 192 });
+        this.load.spritesheet('porteClose', '../asset_lvl1/pistonClose.png', { frameWidth: 32, frameHeight: 192 });
         this.load.spritesheet('button', '../asset_lvl1/red_button.png', { frameWidth: 16, frameHeight: 16 });
         this.load.spritesheet('pc', '../asset_lvl1/ordinateur.png', { frameWidth: 64, frameHeight: 64 });
         this.load.spritesheet("objectif", "../asset_lvl1/objectif_camera.png", { frameWidth: 1024, frameHeight: 576 });
@@ -99,8 +100,9 @@ export default class Niveau1 extends Phaser.Scene {
         this.lever = this.physics.add.sprite(0, 0, 'levier');
         this.lever.body.gravity.y = -600;
         this.lever.setScale(0);
-        //this.button = this.physics.add.sprite(55 * 16, 14 * 16, 'button');
-        //this.button.setSize(8, 100);
+        this.button = this.physics.add.sprite( 0, 0, 'button');
+        this.button.body.gravity.y = -600;
+        this.button.setScale(0);
 
         this.anims.create({
             key: 'push',
@@ -128,6 +130,10 @@ export default class Niveau1 extends Phaser.Scene {
             repeat: 1
         });
 
+        this.porteButton = this.physics.add.sprite(0, 0, 'laser');
+        this.porteButton.body.gravity.y = -600;
+        this.porteButton.setScale(0);
+
         this.porteLevier = this.physics.add.sprite(0, 0, 'porte');
         this.porteLevier.body.gravity.y = -600;
         this.porteLevier.setScale(0);
@@ -144,10 +150,20 @@ export default class Niveau1 extends Phaser.Scene {
             frameRate: 10,
             repeat: 0
         });
+        this.anims.create({
+            key: 'laserOn',
+            frames: this.anims.generateFrameNumbers('laser', { start: 0, end: 1 }),
+            frameRate: 10,
+            repeat: -1
+        });
+        this.anims.create({
+            key: 'laserOff',
+            frames: this.anims.generateFrameNumbers('laser', { start: 2, end: 2 }),
+            frameRate: 10,
+            repeat: -1
+        });
 
-        //this.porteButton = this.physics.add.sprite(60 * 16, 12.75 * 16, 'porte');
-        //this.porteButton.body.gravity.y = -600;
-
+        
         this.pc1 = this.physics.add.sprite(24 * 16, 12 * 16, 'pc');
         this.pc1.setSize(40, 44);
         this.pc1.setOffset(14, 0);
@@ -184,7 +200,7 @@ export default class Niveau1 extends Phaser.Scene {
         this.crazy.setScale(0);
         this.physics.add.collider(this.player, platform)
         this.physics.add.collider(this.player, this.porteLevier)
-        //this.physics.add.collider(this.player, this.porteButton)
+        this.physics.add.collider(this.player, this.porteButton)
         this.physics.add.collider(this.dummy, platform)
         this.physics.add.overlap(this.player, this.dummy, () => {
             if (this.attacking == true) {
@@ -252,11 +268,11 @@ export default class Niveau1 extends Phaser.Scene {
 
 
 
-        //this.box = new Box(this, 65 * 16, 13.67 * 16, "box");
-        //this.box.setInteractive(); // Rendre l'objet interactif
-        //this.box.setSize(16, 16);
-        //this.box.setOffset(0, 0);
-        //this.box.setScale(1);
+        this.box = new Box(this, 0, 0, "box");
+        this.box.setInteractive(); // Rendre l'objet interactif
+        this.box.setSize(16, 16);
+        this.box.setOffset(0, 0);
+        this.box.setScale(0);
 
 
 
@@ -264,17 +280,17 @@ export default class Niveau1 extends Phaser.Scene {
 
 
 
-        /*this.physics.add.collider(this.button, this.box, () => {
+        this.physics.add.overlap(this.button, this.box, () => {
             this.buttonPress = true;
-        });*/
+        });
         this.physics.add.overlap(this.player, this.pc1, () => {
             if (this.clavier.R.isDown)
                 this.pc1enter = true;
         });
-        //this.physics.add.collider(this.player, this.box,() => {});
-        //this.physics.add.collider(platform, this.button)
+        this.physics.add.collider(this.player, this.box,() => {});
+        this.physics.add.collider(platform, this.button)
         this.physics.add.collider(platform, this.pc1)
-        //this.physics.add.collider(this.box, platform)
+        this.physics.add.collider(this.box, platform)
         this.clavier = this.input.keyboard.addKeys('Q,D,SPACE,SHIFT,A,Z,E,R,X,ALT,CTRL,F');
         this.cursors = this.input.keyboard.createCursorKeys();
 
@@ -353,7 +369,7 @@ export default class Niveau1 extends Phaser.Scene {
 
     update() {
         this.porteLevier.setImmovable(true);
-        //this.porteButton.setImmovable(true);
+        this.porteButton.setImmovable(true);
 
 
 
@@ -382,7 +398,7 @@ export default class Niveau1 extends Phaser.Scene {
 
 
 
-        /*this.box.on('pointerdown', () => {
+        this.box.on('pointerdown', () => {
             // Code à exécuter lors du clic sur l'objet box
             this.touchBox = true;
             console.log(this.touchBox);
@@ -400,7 +416,7 @@ export default class Niveau1 extends Phaser.Scene {
         });
         this.box.on('pointerout', () => {
             this.touchBox = false;
-        });*/
+        });
 
 
 
@@ -494,7 +510,7 @@ export default class Niveau1 extends Phaser.Scene {
             this.mode = 1;
             this.cameras.main.shake(100, 0.005);
             this.reparionMode = false;
-            //this.box.body.gravity.y = -600;
+            this.box.body.gravity.y = -600;
             console.log(this.mode);
         }
 
@@ -504,7 +520,7 @@ export default class Niveau1 extends Phaser.Scene {
             this.mode = 0;
             this.cameras.main.shake(100, 0.005);
             this.reparionMode = true;
-            //this.box.body.gravity.y = 0;
+            this.box.body.gravity.y = 0;
             console.log(this.mode);
         }
 
@@ -524,23 +540,23 @@ export default class Niveau1 extends Phaser.Scene {
 
 
 
-        /*//pour le box (à revoir plus tard)
+        //pour le box (à revoir plus tard)
         if (this.touchBox == false) {
             //console.log("STOP")
-        }*/
-        /*if (this.touchBox == true && this.cameraMode == true) {
+        }
+        if (this.touchBox == true && this.cameraMode == true) {
             //console.log("ooououououo very scary")
             this.box.x = this.input.activePointer.worldX;
             this.box.y = this.input.activePointer.worldY;
             // Redessiner les outlines aux nouvelles positions du box
 
-        }*/
+        }
 
         if (this.interlevier == true && this.state == 0 && this.leverporteIsClosed == true) {
             console.log('clic')
             this.lever.anims.play('on', true);
             this.porteLevier.anims.play('open', true);
-            this.porteLevier.setOffset(0, -65.0)
+            this.porteLevier.setOffset(0, -80.0)
             this.state = 1;
             this.time.delayedCall(1000, () => {
                 this.leverporteIsClosed = false;
@@ -550,32 +566,32 @@ export default class Niveau1 extends Phaser.Scene {
             console.log('clic')
             this.lever.anims.play('off', true);
             this.porteLevier.anims.play('close', true);
-            this.porteLevier.setOffset(0, 0)
+            this.porteLevier.setSize(0, 0)
             this.state = 0;
             this.time.delayedCall(1000, () => {
                 this.leverporteIsClosed = true;
             }, this);
         }
 
-        /*if (this.buttonPress == true && this.buttonporteIsClosed == true) {
+        if (this.buttonPress == true && this.buttonporteIsClosed == true) {
             this.button.anims.play('push', true);
-            this.porteButton.anims.play('open', true);
-            this.porteButton.setOffset(0, -65.0);
+            this.porteButton.anims.play('laserOff', true);
+            this.porteButton.setOffset(0, -192);
             this.time.delayedCall(1000, () => {
                 this.buttonporteIsClosed = false;
                 this.buttonstate = 1;
             }, this);
 
-        }*/
-        /*else if (this.buttonPress == false && this.buttonporteIsClosed == false) {
+        }
+        else if (this.buttonPress == false && this.buttonporteIsClosed == false) {
             this.button.anims.play('depush', true);
-            this.porteButton.anims.play('close', true);
+            this.porteButton.anims.play('laserOn', true);
             this.porteButton.setOffset(0, 0);
             this.time.delayedCall(1000, () => {
                 this.buttonporteIsClosed = true;
                 this.buttonstate = 0;
             }, this);
-        }*/
+        }
         if (this.pc1enter == true) {
             this.canTP = true
             this.salle += 1;
@@ -803,8 +819,8 @@ export default class Niveau1 extends Phaser.Scene {
                 this.porteLevier.y = 7 * 16;
                 this.lever.x = 191 * 16;
                 this.lever.y = 12 * 16;
-                this.porteLevier.setScale(2);
-                this.lever.setScale(0.5);
+                this.porteLevier.setScale(1);
+                this.lever.setScale(1);
                 this.contacteur.setScale(0);
                 this.objectif.x = 205 + 182 * 16;
                 this.objectif.y = 115;
@@ -826,6 +842,53 @@ export default class Niveau1 extends Phaser.Scene {
                 this.player.x = 184 * 16;
                 this.player.y = 12 * 16;
                 this.pc1.x = 206 * 16;
+            }
+
+        }
+        if (this.salle == 8) {
+            this.cameras.main.setBounds(208 * 16, 0 * 16, 25 * 16, 14 * 16);
+            this.physics.world.setBounds(208 * 16, 0 * 16, 25 * 16, 14 * 16);
+
+            if (this.canTP == true) {
+                this.porteButton.x = 222 * 16;
+                this.porteButton.y = 7 * 16;
+                this.porteButton.anims.play('laserOn', true);
+                this.button.x = 217 * 16;
+                this.button.y = 12.5 * 16;
+                this.box.x = 227 * 16;
+                this.box.y = 12 * 16;
+                this.porteButton.setScale(1);
+                this.button.setScale(1);
+                this.box.setScale(1);
+                this.lever.setScale(0);
+                this.porteLevier.setScale(0);
+                this.objectif.x = 205 + 208 * 16;
+                this.objectif.y = 115;
+                this.player.x = 210 * 16;
+                this.player.y = 12 * 16;
+                this.pc1.x = 232 * 16;
+            }
+            
+            if (this.playerHealth == 0) {
+                this.porteButton.x = 222 * 16;
+                this.porteButton.y = 7 * 16;
+                this.button.x = 217 * 16;
+                this.button.y = 12.5 * 16;
+                this.box.x = 227 * 16;
+                this.box.y = 12 * 16;
+                this.porteButton.setScale(1);
+                this.button.setScale(1);
+                this.box.setScale(1);
+                this.lever.setScale(0);
+                this.porteLevier.setScale(0);
+                this.objectif.x = 205 + 208 * 16;
+                this.objectif.y = 115;
+                this.player.x = 210 * 16;
+                this.player.y = 12 * 16;
+                this.pc1.x = 232 * 16;
+            }
+            if (this.salle == 9) {
+                this.scene.start('Niveau1');
             }
 
         }
