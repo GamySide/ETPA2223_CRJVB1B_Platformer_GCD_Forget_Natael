@@ -92,6 +92,8 @@ export default class Niveau1 extends Phaser.Scene {
         this.fond1.setScale(1.2);
         this.fond2 = this.add.image(1536, 0, 'fond2');
         this.fond2.setScale(1.2);
+        this.fond3 = this.add.image(3072, 0, 'fond1');
+        this.fond3.setScale(1.2);
 
 
         const platform = level1.createLayer("platform", tileset);
@@ -893,7 +895,7 @@ export default class Niveau1 extends Phaser.Scene {
 
         }
         if (this.salle == 9) {
-            location.reload();
+            this.scene.start('victoryscreen',{});
         }
        
 

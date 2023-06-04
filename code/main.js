@@ -1,4 +1,8 @@
+
+import Titlescene from "./titlescene.js"
 import Niveau1 from "./niveau_1.js"
+import Victoryscreen from "./victoryScreen.js"
+import Controle from "./controle.js"
 const WIDTH = 1024;
 const HEIGHT = 576;
 const ZOOM_FACTOR = 3;
@@ -13,7 +17,7 @@ const SHARED_CONFIG = {
   }
 }
 
-const Scenes = [Niveau1];
+const Scenes = [Titlescene,Controle,Niveau1,Victoryscreen];
 const createScene = Scene => new Scene(SHARED_CONFIG) //A voir
 const initScenes = () => Scenes.map(createScene)
 
@@ -25,10 +29,10 @@ const config = {
     arcade: {
       tileBias: 16,
       gravity: {y:600},
-      debug: true
+      debug: false
     },
   },
-  scene: [Niveau1]
+  scene: [Titlescene,Controle,Niveau1,Victoryscreen]
 };
 
 new Phaser.Game(config);
